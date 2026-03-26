@@ -1,0 +1,112 @@
+from flask import Flask, render_template, request, redirect, url_for, session
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+
+app = Flask(__name__)
+app.secret_key = 'ibo2026secret'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ibo.db'
+db = SQLAlchemy(app)
+
+# --- MODELIAI (duomenų bazės lentelės) ---
+
+class Country(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+
+class Participant(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    nfc_id = db.Column(db.String(50), unique=True, nullable=False)
+    role = db.Column(db.String(20), nullable=False)  # student, guide, leader, organizer
+    country_id = db.Column(db.Integer, db.ForeignKey('country.id'))
+    country = db.relationship('Country', backref='participants')
+
+class CheckIn(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    participant_id = db.Column(db.Integer, db.ForeignKey('participant.id'))
+    participant = db.relationship('Participant', backref='checkins')
+    event_name = db.Column(db.String(100), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Wellbeing(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    participant_id = db.Column(db.Integer, db.ForeignKey('participant.id'))
+    participant = db.relationship('Participant', backref='wellbeing')
+    q1 = db.Column(db.Integer)  # 1-5
+    q2 = db.Column(db.Integer)
+    q3 = db.Column(db.Integer)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+# --- PUSLAPIAI ---
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/checkin', methods=['GET', 'POST'])
+def checkin():
+    message = None
+    participant = None
+    if request.method == 'POST':
+        nfc_id = request.form.get('nfc_id')
+        event = request.form.get('event')
+        participant = Participant.query.filter_by(nfc_id=nfc_id).first()
+        if participant:
+            entry = CheckIn(participant_id=participant.id, event_name=event)
+            db.session.add(entry)
+            db.session.commit()
+            message = f'✅ {participant.name} užregistruotas!'
+        else:
+            message = '❌ Dalyvis nerastas'
+    return render_template('checkin.html', message=message, participant=participant)
+
+@app.route('/wellbeing', methods=['GET', 'POST'])
+def wellbeing():
+    message = None
+    if request.method == 'POST':
+        nfc_id = request.form.get('nfc_id')
+        participant = Participant.query.filter_by(nfc_id=nfc_id).first()
+        if participant:
+            entry = Wellbeing(
+                participant_id=participant.id,
+                q1=request.form.get('q1'),
+                q2=request.form.get('q2'),
+                q3=request.form.get('q3')
+            )
+            db.session.add(entry)
+            db.session.commit()
+            message = f'✅ {participant.name} savijauta užregistruota!'
+        else:
+            message = '❌ Dalyvis nerastas'
+    return render_template('wellbeing.html', message=message)
+
+@app.route('/dashboard')
+def dashboard():
+    checkins = CheckIn.query.order_by(CheckIn.timestamp.desc()).limit(20).all()
+    total_participants = Participant.query.count()
+    total_checkins = CheckIn.query.count()
+    return render_template('dashboard.html', checkins=checkins,
+                           total=total_participants, total_checkins=total_checkins)
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        nfc_id = request.form.get('nfc_id')
+        role = request.form.get('role')
+        country_name = request.form.get('country')
+        country = Country.query.filter_by(name=country_name).first()
+        if not country:
+            country = Country(name=country_name)
+            db.session.add(country)
+            db.session.commit()
+        p = Participant(name=name, nfc_id=nfc_id, role=role, country_id=country.id)
+        db.session.add(p)
+        db.session.commit()
+    participants = Participant.query.all()
+    return render_template('admin.html', participants=participants)
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check-in — IBO 2026</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; }
+        .header { background: #1a3a5c; color: white; padding: 20px 40px; }
+        .header h1 { font-size: 1.5rem; }
+        .back { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.85rem; display: block; margin-bottom: 8px; }
+        .back:hover { color: white; }
+        .container { max-width: 500px; margin: 40px auto; padding: 0 20px; }
+        .card { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.9rem; color: #444; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px;
+                        font-size: 1rem; margin-bottom: 20px; transition: border-color 0.2s; }
+        input:focus, select:focus { outline: none; border-color: #1a3a5c; }
+        button { width: 100%; padding: 14px; background: #1a3a5c; color: white; border: none;
+                 border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #2a5a8c; }
+        .message { padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; text-align: center; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .nfc-hint { text-align: center; color: #888; font-size: 0.8rem; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/" class="back">← Grįžti</a>
+        <h1>📲 Check-in</h1>
+    </div>
+    <div class="container">
+        <div class="card">
+            {% if message %}
+                <div class="message {{ 'success' if '✅' in message else 'error' }}">
+                    {{ message }}
+                </div>
+            {% endif %}
+            <form method="POST">
+                <label>NFC žymos ID</label>
+                <input type="text" name="nfc_id" placeholder="Įveskite arba nuskaitykite NFC" required autofocus>
+                <p class="nfc-hint">📡 Pridėkite NFC kortelę prie įrenginio arba įveskite ID rankiniu būdu</p>
+                <br>
+                <label>Renginys / Veikla</label>
+                <select name="event">
+                    <option value="Teorinis egzaminas">Teorinis egzaminas</option>
+                    <option value="Laboratorinis egzaminas">Laboratorinis egzaminas</option>
+                    <option value="Ekskursija">Ekskursija</option>
+                    <option value="Atidarymo ceremonija">Atidarymo ceremonija</option>
+                    <option value="Uždarymo ceremonija">Uždarymo ceremonija</option>
+                    <option value="Pusryčiai">Pusryčiai</option>
+                    <option value="Pietūs">Pietūs</option>
+                    <option value="Vakarienė">Vakarienė</option>
+                </select>
+                <button type="submit">✅ Registruoti</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savijauta — IBO 2026</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; }
+        .header { background: #1a3a5c; color: white; padding: 20px 40px; }
+        .header h1 { font-size: 1.5rem; }
+        .back { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.85rem; display: block; margin-bottom: 8px; }
+        .back:hover { color: white; }
+        .container { max-width: 500px; margin: 40px auto; padding: 0 20px; }
+        .card { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; color: #444; }
+        input { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px;
+                font-size: 1rem; margin-bottom: 20px; transition: border-color 0.2s; }
+        input:focus { outline: none; border-color: #1a3a5c; }
+        .question { background: #f8f9fa; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        .question p { font-weight: 600; margin-bottom: 15px; color: #1a3a5c; }
+        .stars { display: flex; gap: 10px; justify-content: center; }
+        .stars input[type=radio] { display: none; }
+        .stars label { font-size: 2rem; cursor: pointer; transition: transform 0.1s; padding: 0;
+                       margin: 0; font-weight: normal; width: auto; }
+        .stars label:hover { transform: scale(1.2); }
+        .stars input[type=radio]:checked ~ label { opacity: 0.3; }
+        .stars label:hover ~ label { opacity: 0.3; }
+        button { width: 100%; padding: 14px; background: #1a3a5c; color: white; border: none;
+                 border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #2a5a8c; }
+        .message { padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; text-align: center; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        h2 { color: #1a3a5c; margin-bottom: 20px; font-size: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/" class="back">← Grįžti</a>
+        <h1>💚 Savijautos klausimynas</h1>
+    </div>
+    <div class="container">
+        <div class="card">
+            {% if message %}
+                <div class="message {{ 'success' if '✅' in message else 'error' }}">
+                    {{ message }}
+                </div>
+            {% endif %}
+            <form method="POST">
+                <label>NFC žymos ID</label>
+                <input type="text" name="nfc_id" placeholder="Įveskite arba nuskaitykite NFC" required autofocus>
+
+                <h2>Įvertinkite šios dienos patirtį:</h2>
+
+                <div class="question">
+                    <p>1. Kaip jautiesi šiandien? 😊</p>
+                    <div class="stars">
+                        <input type="radio" name="q1" id="q1_5" value="5"><label for="q1_5">😄</label>
+                        <input type="radio" name="q1" id="q1_4" value="4"><label for="q1_4">🙂</label>
+                        <input type="radio" name="q1" id="q1_3" value="3"><label for="q1_3">😐</label>
+                        <input type="radio" name="q1" id="q1_2" value="2"><label for="q1_2">😕</label>
+                        <input type="radio" name="q1" id="q1_1" value="1"><label for="q1_1">😢</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>2. Ar gerai miegojai? 😴</p>
+                    <div class="stars">
+                        <input type="radio" name="q2" id="q2_5" value="5"><label for="q2_5">😄</label>
+                        <input type="radio" name="q2" id="q2_4" value="4"><label for="q2_4">🙂</label>
+                        <input type="radio" name="q2" id="q2_3" value="3"><label for="q2_3">😐</label>
+                        <input type="radio" name="q2" id="q2_2" value="2"><label for="q2_2">😕</label>
+                        <input type="radio" name="q2" id="q2_1" value="1"><label for="q2_1">😢</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>3. Ar esi pasiruošęs (-usi) rytojaus veikloms? 💪</p>
+                    <div class="stars">
+                        <input type="radio" name="q3" id="q3_5" value="5"><label for="q3_5">😄</label>
+                        <input type="radio" name="q3" id="q3_4" value="4"><label for="q3_4">🙂</label>
+                        <input type="radio" name="q3" id="q3_3" value="3"><label for="q3_3">😐</label>
+                        <input type="radio" name="q3" id="q3_2" value="2"><label for="q3_2">😕</label>
+                        <input type="radio" name="q3" id="q3_1" value="1"><label for="q3_1">😢</label>
+                    </div>
+                </div>
+
+                <button type="submit">💚 Išsaugoti</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administravimas — IBO 2026</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; }
+        .header { background: #1a3a5c; color: white; padding: 20px 40px; }
+        .header h1 { font-size: 1.5rem; }
+        .back { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.85rem; display: block; margin-bottom: 8px; }
+        .back:hover { color: white; }
+        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .card h2 { color: #1a3a5c; margin-bottom: 20px; font-size: 1rem; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.85rem; color: #444; }
+        input, select { width: 100%; padding: 10px 12px; border: 2px solid #e0e0e0; border-radius: 8px;
+                        font-size: 0.9rem; margin-bottom: 15px; transition: border-color 0.2s; }
+        input:focus, select:focus { outline: none; border-color: #1a3a5c; }
+        button { width: 100%; padding: 12px; background: #1a3a5c; color: white; border: none;
+                 border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+        button:hover { background: #2a5a8c; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 10px 12px; background: #f8f9fa; font-size: 0.78rem;
+             color: #666; text-transform: uppercase; }
+        td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; }
+        tr:last-child td { border-bottom: none; }
+        .role { padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .student { background: #e3f2fd; color: #1565c0; }
+        .guide { background: #e8f5e9; color: #2e7d32; }
+        .leader { background: #fff3e0; color: #e65100; }
+        .organizer { background: #f3e5f5; color: #6a1b9a; }
+        .empty { text-align: center; color: #aaa; padding: 20px; font-size: 0.85rem; }
+        .full-width { grid-column: 1 / -1; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/" class="back">← Grįžti</a>
+        <h1>⚙️ Dalyvių administravimas</h1>
+    </div>
+    <div class="container">
+        <div class="grid">
+            <div class="card">
+                <h2>➕ Pridėti dalyvį</h2>
+                <form method="POST">
+                    <label>Vardas Pavardė</label>
+                    <input type="text" name="name" placeholder="pvz. Jonas Jonaitis" required>
+
+                    <label>NFC žymos ID</label>
+                    <input type="text" name="nfc_id" placeholder="pvz. NFC001" required>
+
+                    <label>Vaidmuo</label>
+                    <select name="role">
+                        <option value="student">Mokinys</option>
+                        <option value="guide">Savanoris-gidas</option>
+                        <option value="leader">Komandos vadovas</option>
+                        <option value="organizer">Organizatorius</option>
+                    </select>
+
+                    <label>Šalis</label>
+                    <input type="text" name="country" placeholder="pvz. Lietuva" required>
+
+                    <button type="submit">➕ Pridėti</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>👥 Registruoti dalyviai</h2>
+                {% if participants %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Vardas</th>
+                            <th>Vaidmuo</th>
+                            <th>Šalis</th>
+                            <th>NFC ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in participants %}
+                        <tr>
+                            <td>{{ p.name }}</td>
+                            <td><span class="role {{ p.role }}">{{ p.role }}</span></td>
+                            <td>{{ p.country.name if p.country else '—' }}</td>
+                            <td><code>{{ p.nfc_id }}</code></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                    <p class="empty">Kol kas nėra dalyvių</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

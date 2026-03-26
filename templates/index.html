@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IBO 2026 — Dalyvių valdymo sistema</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; }
+        .header { background: #1a3a5c; color: white; padding: 20px 40px; }
+        .header h1 { font-size: 1.5rem; }
+        .header p { opacity: 0.7; font-size: 0.9rem; }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 30px; }
+        .card { background: white; border-radius: 12px; padding: 30px; text-decoration: none; color: #333;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+        .card .icon { font-size: 2.5rem; margin-bottom: 15px; }
+        .card h2 { font-size: 1.1rem; margin-bottom: 8px; color: #1a3a5c; }
+        .card p { font-size: 0.85rem; color: #666; line-height: 1.5; }
+        .subtitle { color: #555; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧬 IBO 2026 — Dalyvių valdymo sistema</h1>
+        <p>Tarptautinė biologijos olimpiada · Vilnius, 2026</p>
+    </div>
+    <div class="container">
+        <p class="subtitle">Pasirinkite veiksmą:</p>
+        <div class="grid">
+            <a href="/checkin" class="card">
+                <div class="icon">📲</div>
+                <h2>Check-in</h2>
+                <p>Dalyvio registracija renginyje naudojant NFC žymą</p>
+            </a>
+            <a href="/wellbeing" class="card">
+                <div class="icon">💚</div>
+                <h2>Savijauta</h2>
+                <p>Dalyvio savijautos klausimynas po veiklos</p>
+            </a>
+            <a href="/dashboard" class="card">
+                <div class="icon">📊</div>
+                <h2>Statistika</h2>
+                <p>Realaus laiko dalyvių srautų peržiūra</p>
+            </a>
+            <a href="/admin" class="card">
+                <div class="icon">⚙️</div>
+                <h2>Administravimas</h2>
+                <p>Dalyvių registravima
