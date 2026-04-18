@@ -7,7 +7,7 @@ app.secret_key = 'ibo2026secret'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ibo.db'
 db = SQLAlchemy(app)
 
-# --- MODELIAI (duomenų bazės lentelės) ---
+# --- MODELS (database tables) ---
 
 class Country(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -37,7 +37,7 @@ class Wellbeing(db.Model):
     q3 = db.Column(db.Integer)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-# --- PUSLAPIAI ---
+# --- PAGES ---
 
 @app.route('/')
 def index():
@@ -55,9 +55,9 @@ def checkin():
             entry = CheckIn(participant_id=participant.id, event_name=event)
             db.session.add(entry)
             db.session.commit()
-            message = f'✅ {participant.name} užregistruotas!'
+            message = f'✅ {participant.name} successfully checked in!'
         else:
-            message = '❌ Dalyvis nerastas'
+            message = '❌ Participant not found'
     return render_template('checkin.html', message=message, participant=participant)
 
 @app.route('/wellbeing', methods=['GET', 'POST'])
@@ -75,9 +75,9 @@ def wellbeing():
             )
             db.session.add(entry)
             db.session.commit()
-            message = f'✅ {participant.name} savijauta užregistruota!'
+            message = f'✅ {participant.name} wellbeing recorded!'
         else:
-            message = '❌ Dalyvis nerastas'
+            message = '❌ Participant not found'
     return render_template('wellbeing.html', message=message)
 
 @app.route('/dashboard')

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistika — IBO 2026</title>
+    <title>Dashboard — IBO 2026</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; }
@@ -33,32 +33,32 @@
 </head>
 <body>
     <div class="header">
-        <a href="/" class="back">← Grįžti</a>
-        <h1>📊 Statistika ir stebėsena</h1>
+        <a href="/" class="back">← Back</a>
+        <h1>📊 Dashboard & Statistics</h1>
     </div>
     <div class="container">
         <div class="stats">
             <div class="stat-card">
                 <div class="number">{{ total }}</div>
-                <div class="label">Registruotų dalyvių</div>
+                <div class="label">Registered Participants</div>
             </div>
             <div class="stat-card">
                 <div class="number">{{ total_checkins }}</div>
-                <div class="label">Iš viso check-in įrašų</div>
+                <div class="label">Total Check-ins</div>
             </div>
         </div>
 
         <div class="card">
-            <h2>🕐 Paskutiniai check-in įrašai</h2>
+            <h2>🕐 Recent Check-ins</h2>
             {% if checkins %}
             <table>
                 <thead>
                     <tr>
-                        <th>Dalyvis</th>
-                        <th>Vaidmuo</th>
-                        <th>Šalis</th>
-                        <th>Renginys</th>
-                        <th>Laikas</th>
+                        <th>Participant</th>
+                        <th>Role</th>
+                        <th>Country</th>
+                        <th>Event</th>
+                        <th>Time</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,7 +78,7 @@
                 </tbody>
             </table>
             {% else %}
-                <p class="empty">Kol kas nėra check-in įrašų</p>
+                <p class="empty">No Check-ins yet</p>
             {% endif %}
         </div>
     </div>

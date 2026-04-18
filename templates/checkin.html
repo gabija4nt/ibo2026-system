@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="lt">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,7 +28,7 @@
 </head>
 <body>
     <div class="header">
-        <a href="/" class="back">← Grįžti</a>
+        <a href="/" class="back">← Back</a>
         <h1>📲 Check-in</h1>
     </div>
     <div class="container">
@@ -39,22 +39,22 @@
                 </div>
             {% endif %}
             <form method="POST">
-                <label>NFC žymos ID</label>
+                <label>NFC tag ID</label>
                 <input type="text" name="nfc_id" placeholder="Įveskite arba nuskaitykite NFC" required autofocus>
-                <p class="nfc-hint">📡 Pridėkite NFC kortelę prie įrenginio arba įveskite ID rankiniu būdu</p>
+                <p class="nfc-hint">📡 Hold the NFC card near the device or enter the ID manually</p>
                 <br>
-                <label>Renginys / Veikla</label>
+                <label>Event / Activity</label>
                 <select name="event">
-                    <option value="Teorinis egzaminas">Teorinis egzaminas</option>
-                    <option value="Laboratorinis egzaminas">Laboratorinis egzaminas</option>
-                    <option value="Ekskursija">Ekskursija</option>
-                    <option value="Atidarymo ceremonija">Atidarymo ceremonija</option>
-                    <option value="Uždarymo ceremonija">Uždarymo ceremonija</option>
-                    <option value="Pusryčiai">Pusryčiai</option>
-                    <option value="Pietūs">Pietūs</option>
-                    <option value="Vakarienė">Vakarienė</option>
+                    <option value="Theory Exam">Theory Exam</option>
+                    <option value="Laboratory Exam">Laboratory Exam</option>
+                    <option value="Excursion">Excursion</option>
+                    <option value="Opening Ceremony">Opening Ceremony</option>
+                    <option value="Closing Ceremony">Closing Ceremony</option>
+                    <option value="Breakfast">Breakfast</option>
+                    <option value="Lunch">Lunch</option>
+                    <option value="Dinner">Dinner</option>
                 </select>
-                <button type="submit">✅ Registruoti</button>
+                <button type="submit">✅ Submit</button>
             </form>
         </div>
     </div>

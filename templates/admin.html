@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="lt">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administravimas — IBO 2026</title>
+    <title>Administration — IBO 2026</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; }
@@ -38,44 +38,44 @@
 </head>
 <body>
     <div class="header">
-        <a href="/" class="back">← Grįžti</a>
-        <h1>⚙️ Dalyvių administravimas</h1>
+        <a href="/" class="back">← Back</a>
+        <h1>⚙️ Participant administration</h1>
     </div>
     <div class="container">
         <div class="grid">
             <div class="card">
-                <h2>➕ Pridėti dalyvį</h2>
+                <h2>➕ Add Participant</h2>
                 <form method="POST">
-                    <label>Vardas Pavardė</label>
-                    <input type="text" name="name" placeholder="pvz. Jonas Jonaitis" required>
+                    <label>Full Name</label>
+                    <input type="text" name="name" placeholder="e.g. John Doe" required>
 
-                    <label>NFC žymos ID</label>
-                    <input type="text" name="nfc_id" placeholder="pvz. NFC001" required>
+                    <label>NFC tag ID</label>
+                    <input type="text" name="nfc_id" placeholder="e.g. NFC001" required>
 
-                    <label>Vaidmuo</label>
+                    <label>Role</label>
                     <select name="role">
-                        <option value="student">Mokinys</option>
-                        <option value="guide">Savanoris-gidas</option>
-                        <option value="leader">Komandos vadovas</option>
-                        <option value="organizer">Organizatorius</option>
+                        <option value="student">Student</option>
+                        <option value="guide">Guide</option>
+                        <option value="leader">Team Lead</option>
+                        <option value="organizer">Organizer</option>
                     </select>
 
-                    <label>Šalis</label>
-                    <input type="text" name="country" placeholder="pvz. Lietuva" required>
+                    <label>Country</label>
+                    <input type="text" name="country" placeholder="e.g. Lithuania" required>
 
-                    <button type="submit">➕ Pridėti</button>
+                    <button type="submit">➕ Add</button>
                 </form>
             </div>
 
             <div class="card">
-                <h2>👥 Registruoti dalyviai</h2>
+                <h2>👥 Registered Participants</h2>
                 {% if participants %}
                 <table>
                     <thead>
                         <tr>
-                            <th>Vardas</th>
-                            <th>Vaidmuo</th>
-                            <th>Šalis</th>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Country</th>
                             <th>NFC ID</th>
                         </tr>
                     </thead>
@@ -91,7 +91,7 @@
                     </tbody>
                 </table>
                 {% else %}
-                    <p class="empty">Kol kas nėra dalyvių</p>
+                    <p class="empty">No participants yet</p>
                 {% endif %}
             </div>
         </div>
