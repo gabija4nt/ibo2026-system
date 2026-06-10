@@ -12,7 +12,7 @@
         .back { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.85rem; display: block; margin-bottom: 8px; }
         .back:hover { color: white; }
         .container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
-        .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
         .stat-card { background: white; border-radius: 12px; padding: 25px; text-align: center;
                      box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
         .stat-card .number { font-size: 2.5rem; font-weight: 700; color: #1a3a5c; }
@@ -46,8 +46,55 @@
                 <div class="number">{{ total_checkins }}</div>
                 <div class="label">Total Check-ins</div>
             </div>
+            <div class="stat-card">
+                <div class="number">{{ wellbeing_count }}</div>
+                <div class="label">Wellbeing Responses</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">{{ avg_wellbeing }}</div>
+                <div class="label">Average Wellbeing</div>
+            </div>
         </div>
-
+        <div class="card" style="margin-bottom:20px;">
+            <h2>📅 Current Active Event</h2>
+        
+            {% if active_event %}
+                <p style="font-size:1.2rem;font-weight:600;">
+                    {{ active_event.name }}
+                </p>
+            {% else %}
+                <p>No active event selected</p>
+            {% endif %}
+        </div>
+        
+        <div class="card" style="margin-bottom:20px;">
+            <h2>📊 Event Statistics</h2>
+        
+            {% if event_stats %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Check-ins</th>
+                        </tr>
+                    </thead>
+        
+                    <tbody>
+                        {% for event in event_stats %}
+                        <tr>
+                            <td>
+                                {{ event.name }}
+                                {% if event.active %}
+                                    ✅
+                                {% endif %}
+                            </td>
+                            <td>{{ event.count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
         <div class="card">
             <h2>🕐 Recent Check-ins</h2>
             {% if checkins %}

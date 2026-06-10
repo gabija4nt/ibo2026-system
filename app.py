@@ -105,7 +105,7 @@ def wellbeing():
                 db.session.commit()
             
                 message = f'✅ {participant.name} wellbeing recorded!'
-                
+
         else:
             message = '❌ Participant not found'
     return render_template('wellbeing.html', message=message)
@@ -115,7 +115,34 @@ def dashboard():
     checkins = CheckIn.query.order_by(CheckIn.timestamp.desc()).limit(20).all()
     total_participants = Participant.query.count()
     total_checkins = CheckIn.query.count()
+    active_event = Event.query.filter_by(active=True).first()
+
+    events = Event.query.all()
+
+    event_stats = []
+
+    for event in events:
+        count = CheckIn.query.filter_by(
+            event_name=event.name
+        ).count()
+
+        event_stats.append({
+            'name': event.name,
+            'count': count,
+            'active': event.active
+        })
+
     wellbeing_entries = Wellbeing.query.all()
+
+    valid_q1 = [int(w.q1) for w in wellbeing_entries if w.q1 is not None]
+
+    if valid_q1:
+        avg_wellbeing = round(
+            sum(valid_q1) / len(valid_q1),
+            2
+        )
+    else:
+        avg_wellbeing = 0
 
     avg_q1 = 0
     avg_q2 = 0
@@ -143,7 +170,10 @@ def dashboard():
         avg_q1=avg_q1,
         avg_q2=avg_q2,
         avg_q3=avg_q3,
-        wellbeing_count=len(wellbeing_entries)
+        wellbeing_count=len(wellbeing_entries),
+        active_event=active_event,
+        event_stats=event_stats,
+        avg_wellbeing=avg_wellbeing,
     )
 
 @app.route('/admin', methods=['GET', 'POST'])
