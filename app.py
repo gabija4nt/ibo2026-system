@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, date
 import csv
 import io
 
@@ -77,15 +77,35 @@ def wellbeing():
         nfc_id = request.form.get('nfc_id')
         participant = Participant.query.filter_by(nfc_id=nfc_id).first()
         if participant:
-            entry = Wellbeing(
-                participant_id=participant.id,
-                q1=request.form.get('q1'),
-                q2=request.form.get('q2'),
-                q3=request.form.get('q3')
-            )
-            db.session.add(entry)
-            db.session.commit()
-            message = f'✅ {participant.name} wellbeing recorded!'
+            today = date.today()
+
+            existing_entry = Wellbeing.query.filter_by(
+                participant_id=participant.id
+            ).all()
+
+            already_submitted = False
+
+            for entry in existing_entry:
+                if entry.timestamp.date() == today:
+                    already_submitted = True
+                    break
+
+            if already_submitted:
+                message = "⚠️ Wellbeing survey already submitted today."
+            
+            else:
+                entry = Wellbeing(
+                    participant_id=participant.id,
+                    q1=request.form.get('q1'),
+                    q2=request.form.get('q2'),
+                    q3=request.form.get('q3')
+                )
+
+                db.session.add(entry)
+                db.session.commit()
+            
+                message = f'✅ {participant.name} wellbeing recorded!'
+                
         else:
             message = '❌ Participant not found'
     return render_template('wellbeing.html', message=message)
@@ -95,8 +115,36 @@ def dashboard():
     checkins = CheckIn.query.order_by(CheckIn.timestamp.desc()).limit(20).all()
     total_participants = Participant.query.count()
     total_checkins = CheckIn.query.count()
-    return render_template('dashboard.html', checkins=checkins,
-                           total=total_participants, total_checkins=total_checkins)
+    wellbeing_entries = Wellbeing.query.all()
+
+    avg_q1 = 0
+    avg_q2 = 0
+    avg_q3 = 0
+
+    if wellbeing_entries:
+        avg_q1 = round(
+            sum(int(w.q1) for w in wellbeing_entries if w.q1 is not None),
+            2
+        )
+
+        avg_q2 = round(
+            sum(int(w.q2) for w in wellbeing_entries if w.q2 is not None),
+            2
+        )
+
+        avg_q3 = round(
+            sum(int(w.q3) for w in wellbeing_entries if w.q3 is not None),
+            2
+        )
+    return render_template(
+        'dashboard.html',
+        checkins=checkins,
+        total=total_participants, total_checkins=total_checkins,
+        avg_q1=avg_q1,
+        avg_q2=avg_q2,
+        avg_q3=avg_q3,
+        wellbeing_count=len(wellbeing_entries)
+    )
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
