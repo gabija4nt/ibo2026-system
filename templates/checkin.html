@@ -43,16 +43,22 @@
                 <input type="text" name="nfc_id" placeholder="Scan or enter NFC ID" required autofocus>
                 <p class="nfc-hint">📡 Hold the NFC card near the device or enter the ID manually</p>
                 <br>
-                <label>Event / Activity</label>
-                <select name="event">
-                    <option value="Theory Exam">Theory Exam</option>
-                    <option value="Laboratory Exam">Laboratory Exam</option>
-                    <option value="Excursion">Excursion</option>
-                    <option value="Opening Ceremony">Opening Ceremony</option>
-                    <option value="Closing Ceremony">Closing Ceremony</option>
-                    <option value="Breakfast">Breakfast</option>
-                    <option value="Lunch">Lunch</option>
-                    <option value="Dinner">Dinner</option>
+                <label>Current Active Event</label>
+
+                <div style="
+                    background:#f8f9fa;
+                    border:2px solid #e0e0e0;
+                    border-radius:8px;
+                    padding:12px;
+                    margin-bottom:20px;
+                    font-weight:600;
+                ">
+                    {% if active_event %}
+                        📅 {{ active_event.name }}
+                    {% else %}
+                        ⚠️ No active event selected
+                    {% endif %}
+                </div>
                 </select>
                 <button type="submit">✅ Submit</button>
             </form>

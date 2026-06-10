@@ -53,6 +53,49 @@
         {% endwith %}
         <div class="grid">
             <div class="card">
+                <h2>📅 Events</h2>
+            
+                <form method="POST">
+                    <input type="hidden" name="create_event" value="1">
+            
+                    <label>Event Name</label>
+                    <input type="text"
+                           name="event_name"
+                           placeholder="e.g. Opening Ceremony"
+                           required>
+            
+                    <button type="submit">
+                        Create Event
+                    </button>
+                </form>
+            
+                <br>
+            
+                {% if events %}
+                    <h3>Existing Events</h3>
+                    <ul>
+                        {% for event in events %}
+                            <li>
+                                {{ event.name }}
+                                
+                                {% if event.active %}
+                                    ✅ ACTIVE
+                                {% else %}
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden"
+                                                name="activate_event"
+                                                value="{{ event.id }}">
+                                        <button type="submit">
+                                            Activate
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </li>  
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div class="card">
                 <h2>➕ Add Participant</h2>
                 <div class="card">
                     <h2>📁 Import Participants (CSV)</h2>

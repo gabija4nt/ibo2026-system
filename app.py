@@ -39,6 +39,11 @@ class Wellbeing(db.Model):
     q3 = db.Column(db.Integer)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
+class Event(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    active = db.Column(db.Boolean, default=False)
+
 # --- PAGES ---
 
 @app.route('/')
@@ -49,9 +54,12 @@ def index():
 def checkin():
     message = None
     participant = None
+
+    active_event = Event.query.filter_by(active=True).first()
+
     if request.method == 'POST':
         nfc_id = request.form.get('nfc_id')
-        event = request.form.get('event')
+        event = active_event.name if active_event else "No Active Event"
         participant = Participant.query.filter_by(nfc_id=nfc_id).first()
         if participant:
             entry = CheckIn(participant_id=participant.id, event_name=event)
@@ -60,7 +68,7 @@ def checkin():
             message = f'✅ {participant.name} successfully checked in!'
         else:
             message = '❌ Participant not found'
-    return render_template('checkin.html', message=message, participant=participant)
+    return render_template('checkin.html', message=message, participant=participant, active_event=active_event)
 
 @app.route('/wellbeing', methods=['GET', 'POST'])
 def wellbeing():
@@ -94,6 +102,30 @@ def dashboard():
 def admin():
 
     if request.method == 'POST':
+        if request.form.get('activate_event'):
+
+            event_id = request.form.get('activate_event')
+
+            Event.query.update({'active': False})
+
+            event = Event.query.get(event_id)
+
+            if event:
+                event.active = True
+                db.session.commit()
+
+            return redirect(url_for('admin'))
+
+        if request.form.get('create_event'):
+
+            event_name = request.form.get('event_name')
+
+            if event_name:
+                event = Event(name=event_name)
+                db.session.add(event)
+                db.session.commit()
+
+            return redirect(url_for('admin'))
 
         if request.form.get('import_csv'):
 
@@ -165,10 +197,12 @@ def admin():
         db.session.commit()
 
     participants = Participant.query.all()
+    events = Event.query.all()
 
     return render_template(
         'admin.html',
-        participants=participants
+        participants=participants,
+        events=events
     )
 
 if __name__ == '__main__':
