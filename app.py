@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import csv
@@ -103,7 +103,17 @@ def admin():
                 stream = io.StringIO(file.stream.read().decode("UTF8"))
                 reader = csv.DictReader(stream)
 
+                imported_count = 0
+                skipped_count = 0
+
                 for row in reader:
+                    existing = Participant.query.filter_by(
+                        nfc_id=row['nfc_id']
+                    ).first()
+
+                    if existing:
+                        skipped_count += 1
+                        continue
 
                     country_name = row['country']
 
@@ -122,8 +132,13 @@ def admin():
                     )
 
                     db.session.add(participant)
+                    imported_count += 1
 
                 db.session.commit()
+                flash(
+                    f"Import completed. Imported: {imported_count}, Skipped duplicates: {skipped_count}",
+                    "success"
+                )
 
             return redirect(url_for('admin'))
 
