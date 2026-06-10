@@ -45,6 +45,18 @@
         <div class="grid">
             <div class="card">
                 <h2>➕ Add Participant</h2>
+                <div class="card">
+                    <h2>📁 Import Participants (CSV)</h2>
+                
+                    <form method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="import_csv" value="1">
+                
+                        <label>Select CSV file</label>
+                        <input type="file" name="csv_file" accept=".csv" required>
+                
+                        <button type="submit">Import CSV</button>
+                    </form>
+                </div>
                 <form method="POST">
                     <label>Full Name</label>
                     <input type="text" name="name" placeholder="e.g. John Doe" required>

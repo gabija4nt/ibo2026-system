@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import csv
+import io
 
 app = Flask(__name__)
 app.secret_key = 'ibo2026secret'
@@ -90,21 +92,69 @@ def dashboard():
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
+
     if request.method == 'POST':
+
+        if request.form.get('import_csv'):
+
+            file = request.files.get('csv_file')
+
+            if file:
+                stream = io.StringIO(file.stream.read().decode("UTF8"))
+                reader = csv.DictReader(stream)
+
+                for row in reader:
+
+                    country_name = row['country']
+
+                    country = Country.query.filter_by(name=country_name).first()
+
+                    if not country:
+                        country = Country(name=country_name)
+                        db.session.add(country)
+                        db.session.commit()
+
+                    participant = Participant(
+                        name=row['name'],
+                        nfc_id=row['nfc_id'],
+                        role=row['role'],
+                        country_id=country.id
+                    )
+
+                    db.session.add(participant)
+
+                db.session.commit()
+
+            return redirect(url_for('admin'))
+
         name = request.form.get('name')
         nfc_id = request.form.get('nfc_id')
         role = request.form.get('role')
         country_name = request.form.get('country')
+
         country = Country.query.filter_by(name=country_name).first()
+
         if not country:
             country = Country(name=country_name)
             db.session.add(country)
             db.session.commit()
-        p = Participant(name=name, nfc_id=nfc_id, role=role, country_id=country.id)
+
+        p = Participant(
+            name=name,
+            nfc_id=nfc_id,
+            role=role,
+            country_id=country.id
+        )
+
         db.session.add(p)
         db.session.commit()
+
     participants = Participant.query.all()
-    return render_template('admin.html', participants=participants)
+
+    return render_template(
+        'admin.html',
+        participants=participants
+    )
 
 if __name__ == '__main__':
     with app.app_context():
