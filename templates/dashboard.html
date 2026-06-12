@@ -17,7 +17,7 @@
                      box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
         .stat-card .number { font-size: 2.5rem; font-weight: 700; color: #1a3a5c; }
         .stat-card .label { color: #888; font-size: 0.85rem; margin-top: 5px; }
-        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px;}
         .card h2 { color: #1a3a5c; margin-bottom: 20px; font-size: 1rem; }
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 10px 12px; background: #f8f9fa; font-size: 0.8rem;
@@ -29,6 +29,20 @@
         .guide { background: #e8f5e9; color: #2e7d32; }
         .leader { background: #fff3e0; color: #e65100; }
         .empty { text-align: center; color: #aaa; padding: 30px; }
+        .good {
+            color: #2e7d32;
+            font-weight: 700;
+        }
+
+        .warning {
+            color: #e65100;
+            font-weight: 700;
+        }
+
+        .bad {
+            color: #c62828;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
@@ -51,7 +65,7 @@
                 <div class="label">Wellbeing Responses</div>
             </div>
             <div class="stat-card">
-                <div class="number">{{ avg_wellbeing }}</div>
+                <div class="number">{{ avg_wellbeing }} / 5</div>
                 <div class="label">Average Wellbeing</div>
             </div>
         </div>
@@ -127,6 +141,64 @@
             {% else %}
                 <p class="empty">No Check-ins yet</p>
             {% endif %}
+        </div>
+        <div class="card" style="margin-top:20px;">
+            <h2>💚 Recent Wellbeing Responses</h2>
+        
+            {% if recent_wellbeing %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Participant</th>
+                        <th>Country</th>
+                        <th>Mood</th>
+                        <th>Sleep</th>
+                        <th>Readiness</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+        
+                <tbody>
+                    {% for w in recent_wellbeing %}
+                    <tr>
+                        <td>{{ w.participant.name }}</td>
+                        <td>{{ w.participant.country.name if w.participant.country else '—' }}</td>
+                        <td>
+                            {% if w.q1 is none %}
+                                —
+                            {% elif w.q1 >= 4 %}
+                                <span class="good">{{ w.q1 }}/5</span>
+                            {% elif w.q1 == 3 %}
+                                <span class="warning">{{ w.q1 }}/5</span>
+                            {% else %}
+                                <span class="bad">{{ w.q1 }}/5</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if w.q2 is none %}
+                                —
+                            {% elif w.q2 >= 4 %}
+                                <span class="good">{{ w.q2 }}/5</span>
+                            {% elif w.q2 == 3 %}
+                                <span class="warning">{{ w.q2 }}/5</span>
+                            {% else %}
+                                <span class="bad">{{ w.q2 }}/5</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ w.timestamp.strftime('%H:%M, %d/%m') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p class="empty">No wellbeing responses yet</p>
+            {% endif %}
+        </div>
+        <div class="card" style="margin-top:20px;">
+            <h2>💚 Wellbeing Status</h2>
+            <p style="font-size:1.5rem; font-weight:700;">
+                {{ wellbeing_status }}
+            </p>
         </div>
     </div>
 </body>

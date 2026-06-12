@@ -133,47 +133,60 @@ def dashboard():
         })
 
     wellbeing_entries = Wellbeing.query.all()
+    wellbeing_count = len(wellbeing_entries)
 
     valid_q1 = [int(w.q1) for w in wellbeing_entries if w.q1 is not None]
+    valid_q2 = [int(w.q2) for w in wellbeing_entries if w.q2 is not None]
+    valid_q3 = [int(w.q3) for w in wellbeing_entries if w.q3 is not None]
 
     if valid_q1:
+        avg_q1 = round(sum(valid_q1) / len(valid_q1), 2)
+    else:
+        avg_q1 = 0
+
+    if valid_q2:
+        avg_q2 = round(sum(valid_q2) / len(valid_q2), 2)
+    else:
+        avg_q2 = 0
+
+    if valid_q3:
+        avg_q3 = round(sum(valid_q3) / len(valid_q3), 2)
+    else:
+        avg_q3 = 0
+
+    if wellbeing_count > 0:
         avg_wellbeing = round(
-            sum(valid_q1) / len(valid_q1),
+            (avg_q1 + avg_q2 + avg_q3) / 3,
             2
         )
     else:
         avg_wellbeing = 0
 
-    avg_q1 = 0
-    avg_q2 = 0
-    avg_q3 = 0
+    if avg_wellbeing >= 4:
+        wellbeing_status = "🟢 Good wellbeing"
+    elif avg_wellbeing >= 3:
+        wellbeing_status = "🟡 Attention needed"
+    else:
+        wellbeing_status = "🔴 High risk"
 
-    if wellbeing_entries:
-        avg_q1 = round(
-            sum(int(w.q1) for w in wellbeing_entries if w.q1 is not None),
-            2
-        )
+    recent_wellbeing = Wellbeing.query.order_by(
+        Wellbeing.timestamp.desc()
+    ).limit(10).all()
 
-        avg_q2 = round(
-            sum(int(w.q2) for w in wellbeing_entries if w.q2 is not None),
-            2
-        )
-
-        avg_q3 = round(
-            sum(int(w.q3) for w in wellbeing_entries if w.q3 is not None),
-            2
-        )
     return render_template(
         'dashboard.html',
         checkins=checkins,
-        total=total_participants, total_checkins=total_checkins,
+        total=total_participants, 
+        total_checkins=total_checkins,
         avg_q1=avg_q1,
         avg_q2=avg_q2,
         avg_q3=avg_q3,
-        wellbeing_count=len(wellbeing_entries),
+        wellbeing_count=wellbeing_count,
         active_event=active_event,
         event_stats=event_stats,
         avg_wellbeing=avg_wellbeing,
+        recent_wellbeing=recent_wellbeing,
+        wellbeing_status=wellbeing_status,
     )
 
 @app.route('/admin', methods=['GET', 'POST'])
