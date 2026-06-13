@@ -127,6 +127,10 @@ def wellbeing():
 
 @app.route('/dashboard')
 def dashboard():
+
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
     checkins = CheckIn.query.order_by(CheckIn.timestamp.desc()).limit(20).all()
     total_participants = Participant.query.count()
     total_checkins = CheckIn.query.count()
@@ -206,6 +210,12 @@ def dashboard():
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
+
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    if session['role'] != 'admin':
+        return "Access denied", 403
 
     if request.method == 'POST':
         if request.form.get('activate_event'):
@@ -389,6 +399,11 @@ def login():
             return redirect(url_for('dashboard'))
 
     return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     with app.app_context():
