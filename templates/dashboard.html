@@ -43,12 +43,34 @@
             color: #c62828;
             font-weight: 700;
         }
+
+        .logout-btn {
+            color: white;
+            text-decoration: none;
+            padding: 10px 16px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <a href="/" class="back">← Back</a>
-        <h1>📊 Dashboard & Statistics</h1>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+    
+            <div>
+                <a href="/" class="back">← Back</a>
+                <h1>📊 Dashboard & Statistics</h1>
+            </div>
+    
+            <a href="/logout" class="logout-btn">
+                Logout
+            </a>
+    
+        </div>
     </div>
     <div class="container">
         <div class="stats">

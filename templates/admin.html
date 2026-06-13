@@ -34,12 +34,41 @@
         .organizer { background: #f3e5f5; color: #6a1b9a; }
         .empty { text-align: center; color: #aaa; padding: 20px; font-size: 0.85rem; }
         .full-width { grid-column: 1 / -1; }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logout-btn {
+            color: white;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 10px 18px;
+            border-radius: 10px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <a href="/" class="back">← Back</a>
-        <h1>⚙️ Participant administration</h1>
+
+        <div class="header-top">
+    
+            <div>
+                <a href="/" class="back">← Back</a>
+                <h1>⚙️ Participant administration</h1>
+            </div>
+    
+            <a href="/logout" class="logout-btn">
+                Logout
+            </a>
+    
+        </div>
+    
     </div>
     <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
