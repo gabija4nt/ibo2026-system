@@ -296,6 +296,64 @@ def admin():
         events=events
     )
 
+@app.route('/wellbeing_dashboard/<int:participant_id>')
+def wellbeing_dashboard(participant_id):
+
+    participant = Participant.query.get_or_404(
+        participant_id
+    )
+
+    wellbeing_entries = Wellbeing.query.filter_by(
+        participant_id=participant_id
+    ).order_by(
+        Wellbeing.timestamp
+    ).all()
+
+    labels = []
+    student_q1 = []
+    global_avg_q1 = []
+
+    for entry in wellbeing_entries:
+        
+        if entry.q1 is None:
+            continue
+
+        day = entry.timestamp.date()
+
+        labels.append(
+            entry.timestamp.strftime('%d/%m')
+        )
+
+        student_q1.append(entry.q1)
+
+        all_entries = Wellbeing.query.filter(
+            Wellbeing.q1 != None
+        ).all()
+
+        if all_entries:
+            avg = round(
+                sum(w.q1 for w in all_entries) / len(all_entries),
+                2
+
+            )
+        else:
+            avg = 0
+        
+        global_avg_q1.append(avg)
+
+    print("LABELS:", labels)
+    print("STUDENT:", student_q1)
+    print("GLOBAL:", global_avg_q1)
+
+    return render_template(
+        'wellbeing_dashboard.html',
+        participant=participant,
+        wellbeing_entries=wellbeing_entries,
+        labels=labels,
+        student_q1=student_q1,
+        global_avg_q1=global_avg_q1,
+    )
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()

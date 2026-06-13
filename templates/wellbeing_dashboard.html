@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wellbeing Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <h1>💚 Wellbeing Dashboard</h1>
+    <h2>{{ participant.name }}</h2>
+
+    <canvas id="myChart"></canvas>
+
+    <script>
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ labels | tojson }},
+            datasets: [
+                {
+                    label: 'Student mood (Q1)',
+                    data: {{ student_q1 | tojson }},
+                    borderWidth: 3
+                },
+                {
+                    label: 'Global average',
+                    data: {{ global_avg_q1 | tojson }},
+                    borderWidth: 3
+                }
+
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    min: 1,
+                    max: 5
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
