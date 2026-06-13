@@ -44,6 +44,21 @@ class Event(db.Model):
     name = db.Column(db.String(100), nullable=False)
     active = db.Column(db.Boolean, default=False)
 
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    username = db.Column(db.String(100), unique=True)
+    password = db.Column(db.String(200))
+
+    role = db.Column(db.String(50))
+
+    country_id = db.Column(
+        db.Integer,
+        db.ForeignKey('country.id')
+    )
+
+    country = db.relationship('Country')
+
 # --- PAGES ---
 
 @app.route('/')
@@ -353,6 +368,27 @@ def wellbeing_dashboard(participant_id):
         student_q1=student_q1,
         global_avg_q1=global_avg_q1,
     )
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+
+    if request.method == 'POST':
+
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        user = User.query.filter_by(
+            username=username,
+            password=password
+        ).first()
+
+        if user:
+            session['user_id'] = user.id
+            session['role'] = user.role
+
+            return redirect(url_for('dashboard'))
+
+    return render_template('login.html')
 
 if __name__ == '__main__':
     with app.app_context():
