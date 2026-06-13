@@ -324,9 +324,18 @@ def admin():
 @app.route('/wellbeing_dashboard/<int:participant_id>')
 def wellbeing_dashboard(participant_id):
 
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    user = User.query.get(session['user_id'])
+
     participant = Participant.query.get_or_404(
         participant_id
     )
+
+    if user.role == 'team_leader':
+        if participant.country_id != user.country_id:
+            return "Access denied", 403
 
     wellbeing_entries = Wellbeing.query.filter_by(
         participant_id=participant_id
@@ -377,6 +386,27 @@ def wellbeing_dashboard(participant_id):
         labels=labels,
         student_q1=student_q1,
         global_avg_q1=global_avg_q1,
+    )
+
+@app.route('/leader_dashboard')
+def leader_dashboard():
+
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    user = User.query.get(session['user_id'])
+
+    if user.role != 'team_leader':
+        return "Access denied", 403
+
+    students = Participant.query.filter_by(
+        country_id=user.country_id,
+        role='student'
+    ).all()
+
+    return render_template(
+        'leader_dashboard.html',
+        students=students
     )
 
 @app.route('/login', methods=['GET', 'POST'])

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leader Dashboard</title>
+</head>
+<body>
+
+    <h1>Team Leader Dashboard</h1>
+
+    {% for student in students %}
+
+        <div style="
+            border:1px solid #ccc;
+            margin:20px;
+            padding:20px;
+            border-radius:10px;
+        ">
+
+            <h2>{{ student.name }}</h2>
+
+            <p>
+                Country:
+                {{ student.country.name }}
+            </p>
+            
+            {% if student.wellbeing %}
+                <p>
+                    Latest mood:
+                    {{ student.wellbeing[-1].q1 }}/5
+                </p>
+            
+                <p>
+                    Last submission:
+                    {{ student.wellbeing[-1].timestamp.strftime('%d/%m %H:%M') }}
+                </p>
+            {% endif %}
+
+            <a href="/wellbeing_dashboard/{{ student.id }}">
+                View wellbeing
+            </a>
+
+        </div>
+
+    {% endfor %}
+
+</body>
+</html>
