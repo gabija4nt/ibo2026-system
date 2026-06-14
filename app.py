@@ -67,11 +67,19 @@ def index():
 
 @app.route('/checkin', methods=['GET', 'POST'])
 def checkin():
+
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    user = User.query.get(session['user_id'])
+
+    if user.role not in ['admin', 'organizer', 'guide']:
+        return "Access denied", 403
+
     message = None
     participant = None
 
     active_event = Event.query.filter_by(active=True).first()
-
     if request.method == 'POST':
         nfc_id = request.form.get('nfc_id')
         event = active_event.name if active_event else "No Active Event"
@@ -130,6 +138,11 @@ def dashboard():
 
     if 'user_id' not in session:
         return redirect(url_for('login'))
+
+    user = User.query.get(session['user_id'])
+
+    if user.role not in ['admin', 'organizer']:
+        return "Access denied", 403
     
     checkins = CheckIn.query.order_by(CheckIn.timestamp.desc()).limit(20).all()
     total_participants = Participant.query.count()
@@ -470,7 +483,20 @@ def login():
             session['user_id'] = user.id
             session['role'] = user.role
 
-            return redirect(url_for('dashboard'))
+            if user.role == 'admin':
+                return redirect(url_for('admin'))
+
+            elif user.role == 'team_leader':
+                return redirect(url_for('leader_dashboard'))
+
+            elif user.role == 'organizer':
+                return redirect(url_for('dashboard'))
+
+            elif user.role == 'guide':
+                return redirect(url_for('checkin'))
+
+            else:
+                return redirect(url_for('index'))
 
     return render_template('login.html')
 

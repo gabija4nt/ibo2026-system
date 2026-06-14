@@ -58,12 +58,36 @@
         .btn:hover {
             background: #2a5a8c;
         }
+
+        .logout-btn {
+            color: white;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 10px 16px;
+            border-radius: 8px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
     </style>
 </head>
 
 <body>
     <div class="header">
-        <h1>👨‍🏫 Team Leader Dashboard</h1>
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        ">
+    
+            <h1>👨‍🏫 Team Leader Dashboard</h1>
+    
+            <a href="/logout" class="logout-btn">
+                Logout
+            </a>
+    
+        </div>
     </div>
 
     <div class="container">
