@@ -2,46 +2,153 @@
 <html>
 <head>
     <title>Leader Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+        }
+
+        .header {
+            background: #1a3a5c;
+            color: white;
+            padding: 20px 40px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            color: #1a3a5c;
+            margin-bottom: 15px;
+        }
+
+        .info {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .chart-container {
+            height: 180px;
+            margin: 20px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #1a3a5c;
+            color: white;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .btn:hover {
+            background: #2a5a8c;
+        }
+    </style>
 </head>
+
 <body>
+    <div class="header">
+        <h1>👨‍🏫 Team Leader Dashboard</h1>
+    </div>
 
-    <h1>Team Leader Dashboard</h1>
+    <div class="container">
 
-    {% for student in students %}
+        {% for item in student_data %}
 
-        <div style="
-            border:1px solid #ccc;
-            margin:20px;
-            padding:20px;
-            border-radius:10px;
-        ">
+            <div class="card">
 
-            <h2>{{ student.name }}</h2>
+                <h2>{{ item.student.name }}</h2>
 
-            <p>
-                Country:
-                {{ student.country.name }}
-            </p>
-            
-            {% if student.wellbeing %}
-                <p>
-                    Latest mood:
-                    {{ student.wellbeing[-1].q1 }}/5
+                <p class="info">
+                    <b>Country:</b>
+                    {{ item.student.country.name }}
                 </p>
-            
-                <p>
-                    Last submission:
-                    {{ student.wellbeing[-1].timestamp.strftime('%d/%m %H:%M') }}
-                </p>
-            {% endif %}
+                
+                {% if item.student.wellbeing %}
+                    <p class="info">
+                        <b>Latest mood:</b>
+                        {{ item.student.wellbeing[-1].q1 }}/5
+                    </p>
+                
+                    <p class="info">
+                        <b>Last submission:</b>
+                        {{ item.student.wellbeing[-1].timestamp.strftime('%d/%m %H:%M') }}   
+                    </p>
 
-            <a href="/wellbeing_dashboard/{{ student.id }}">
-                View wellbeing
-            </a>
+                    <p class="info">
+                        <b>Responses:</b>
+                        {{ item.q1_values | length }}/8 days
+                    </p>
 
-        </div>
+                    <div class="chart-container">
+                        <canvas id="chart{{ item.student.id }}"></canvas>
+                    </div>
+                    
+            <script>
+                new Chart(
+                    document.getElementById(
+                        'chart{{ item.student.id }}'
+                    ),
+                    {
+                        type: 'line',
+                        data: {
+                            labels: {{ item.labels | tojson }},
+                            datasets: [
+                            {
+                                label: 'Student',
+                                data: {{ item.q1_values | tojson }},
+                                borderWidth: 3,
+                                borderColor: '#3b82f6'
+                            },
+                            {
+                                label: 'Global average',
+                                data: {{ item.global_avg | tojson }},
+                                borderWidth: 3,
+                                borderColor: '#ef476f'
+                            }
+                        ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    min: 1,
+                                    max: 5
+                                }
+                            }
+                        }
+                    }
+                );
+            </script>
+                    
+                {% endif %}
 
-    {% endfor %}
+                <a class="btn"
+                href="/wellbeing_dashboard/{{ item.student.id }}">
+                    View wellbeing
+                </a>
+
+            </div>
+
+        {% endfor %}
+        
+    </div>
 
 </body>
 </html>

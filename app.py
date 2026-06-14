@@ -375,10 +375,6 @@ def wellbeing_dashboard(participant_id):
         
         global_avg_q1.append(avg)
 
-    print("LABELS:", labels)
-    print("STUDENT:", student_q1)
-    print("GLOBAL:", global_avg_q1)
-
     return render_template(
         'wellbeing_dashboard.html',
         participant=participant,
@@ -404,9 +400,57 @@ def leader_dashboard():
         role='student'
     ).all()
 
+    student_data = []
+
+    for student in students:
+
+        entries = Wellbeing.query.filter_by(
+            participant_id=student.id
+        ).order_by(
+            Wellbeing.timestamp
+        ).all()
+
+        labels = []
+        q1_values = []
+        global_avg = []
+
+        for e in entries:
+
+            labels.append(
+                e.timestamp.strftime('%d/%m')
+            )
+
+            q1_values.append(e.q1)
+
+            all_entries = Wellbeing.query.filter(
+                Wellbeing.q1 != None
+            ).all()
+
+            values = [
+                w.q1 for w in all_entries
+                if w.q1 is not None
+            ]
+
+            if values:
+                avg = round(
+                    sum(values) / len(values),
+                    2
+                )
+            else:
+                avg = 0
+
+            global_avg.append(avg)
+        
+        student_data.append({
+            'student': student,
+            'labels': labels,
+            'q1_values': q1_values,
+            'global_avg': global_avg
+        })
+
     return render_template(
         'leader_dashboard.html',
-        students=students
+        student_data=student_data
     )
 
 @app.route('/login', methods=['GET', 'POST'])
