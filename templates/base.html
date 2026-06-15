@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <title>
+        {% block title %}
+            IBO 2026
+        {% endblock %}
+    </title>
+
+    {% block head %}
+    {% endblock %}
+</head>
+
+<body>
+
+    {% if session.get('user_id') %}
+    <div class="header">
+
+        <div class="header-top">
+
+            <div>
+                {% if request.endpoint != 'index' %}
+                <a href="{{ url_for('index') }}" class="back">
+                    ← Home
+                </a>
+                {% endif %}
+                <h1>
+                    <a href="{{ url_for('index') }}"
+                       style="color:white; text-decoration:none;">
+                        🧬 IBO 2026
+                    </a>
+                </h1>
+            </div>
+
+            <div class="user-info">
+
+                {{ session['username'] }} •
+            
+                {% if session['role'] == 'team_leader' %}
+                    Team Leader
+                {% elif session['role'] == 'admin' %}
+                    Admin
+                {% elif session['role'] == 'guide' %}
+                    Guide
+                {% elif session['role'] == 'organizer' %}
+                    Organizer
+                {% endif %}
+            
+                <a href="{{ url_for('logout') }}"
+                   class="logout-btn">
+                    Logout
+                </a>
+            
+            </div>
+
+        </div>
+
+    </div>
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>

@@ -1,96 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Leader Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #f0f4f8;
-            margin: 0;
-        }
+{% extends "base.html" %}
 
-        .header {
-            background: #1a3a5c;
-            color: white;
-            padding: 20px 40px;
-        }
+{% block title %}
+Leader Dashboard
+{% endblock %}
 
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
 
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
+{% block content %}
 
-        .card h2 {
-            color: #1a3a5c;
-            margin-bottom: 15px;
-        }
+<div class="container">
 
-        .info {
-            margin-bottom: 10px;
-            color: #555;
-        }
-
-        .chart-container {
-            height: 180px;
-            margin: 20px 0;
-        }
-
-        .btn {
-            display: inline-block;
-            background: #1a3a5c;
-            color: white;
-            text-decoration: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            margin-top: 15px;
-        }
-
-        .btn:hover {
-            background: #2a5a8c;
-        }
-
-        .logout-btn {
-            color: white;
-            text-decoration: none;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 10px 16px;
-            border-radius: 8px;
-        }
-
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.1);
-        }
-    </style>
-</head>
-
-<body>
-    <div class="header">
-        <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-        ">
-    
-            <h1>👨‍🏫 Team Leader Dashboard</h1>
-    
-            <a href="/logout" class="logout-btn">
-                Logout
-            </a>
-    
-        </div>
-    </div>
-
-    <div class="container">
+    <h1>👨‍🏫 Team Leader Dashboard</h1>
 
         {% for item in student_data %}
 
@@ -172,7 +94,6 @@
 
         {% endfor %}
         
-    </div>
+</div>
 
-</body>
-</html>
+{% endblock %}

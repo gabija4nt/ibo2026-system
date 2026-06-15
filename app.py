@@ -63,6 +63,10 @@ class User(db.Model):
 
 @app.route('/')
 def index():
+
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
     return render_template('index.html')
 
 @app.route('/checkin', methods=['GET', 'POST'])
@@ -149,7 +153,9 @@ def dashboard():
     total_checkins = CheckIn.query.count()
     active_event = Event.query.filter_by(active=True).first()
 
-    events = Event.query.all()
+    events = Event.query.order_by(
+        Event.id.desc()
+    ).all()
 
     event_stats = []
 
@@ -482,6 +488,7 @@ def login():
         if user:
             session['user_id'] = user.id
             session['role'] = user.role
+            session['username'] = user.username
 
             if user.role == 'admin':
                 return redirect(url_for('admin'))
@@ -508,4 +515,9 @@ def logout():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+
+    app.run(
+        host='0.0.0.0',
+        port=5001,
+        debug=True
+    )

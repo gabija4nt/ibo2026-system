@@ -1,37 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Check-in — IBO 2026</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; }
-        .header { background: #1a3a5c; color: white; padding: 20px 40px; }
-        .header h1 { font-size: 1.5rem; }
-        .back { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.85rem; display: block; margin-bottom: 8px; }
-        .back:hover { color: white; }
-        .container { max-width: 500px; margin: 40px auto; padding: 0 20px; }
-        .card { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.9rem; color: #444; }
-        input, select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px;
-                        font-size: 1rem; margin-bottom: 20px; transition: border-color 0.2s; }
-        input:focus, select:focus { outline: none; border-color: #1a3a5c; }
-        button { width: 100%; padding: 14px; background: #1a3a5c; color: white; border: none;
-                 border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-        button:hover { background: #2a5a8c; }
-        .message { padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; text-align: center; }
-        .success { background: #d4edda; color: #155724; }
-        .error { background: #f8d7da; color: #721c24; }
-        .nfc-hint { text-align: center; color: #888; font-size: 0.8rem; margin-top: 10px; }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <a href="/" class="back">← Back</a>
-        <h1>📲 Check-in</h1>
-    </div>
-    <div class="container">
+{% extends "base.html" %}
+
+{% block title %}
+Check-in
+{% endblock %}
+
+{% block content %}
+    <div class="container-small">
+        <h1 class="page-title">
+            📲 Check-in
+        </h1>
         <div class="card">
             {% if message %}
                 <div class="message {{ 'success' if '✅' in message else 'error' }}">
@@ -45,24 +22,17 @@
                 <br>
                 <label>Current Active Event</label>
 
-                <div style="
-                    background:#f8f9fa;
-                    border:2px solid #e0e0e0;
-                    border-radius:8px;
-                    padding:12px;
-                    margin-bottom:20px;
-                    font-weight:600;
-                ">
+                <div class="event-box">
                     {% if active_event %}
                         📅 {{ active_event.name }}
                     {% else %}
                         ⚠️ No active event selected
                     {% endif %}
                 </div>
-                </select>
-                <button type="submit">✅ Submit</button>
+                <button type="submit">
+                    📲 Check In
+                </button>
             </form>
         </div>
     </div>
-</body>
-</html>
+    {% endblock %}

@@ -1,49 +1,73 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Wellbeing Dashboard</title>
+{% extends "base.html" %}
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
+{% block title %}
+Wellbeing Dashboard
+{% endblock %}
 
-    <h1>💚 Wellbeing Dashboard</h1>
-    <h2>{{ participant.name }}</h2>
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
 
-    <canvas id="myChart"></canvas>
+{% block content %}
 
-    <script>
-    const ctx = document.getElementById('myChart');
+<div class="container-medium">
 
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: {{ labels | tojson }},
-            datasets: [
-                {
-                    label: 'Student mood (Q1)',
-                    data: {{ student_q1 | tojson }},
-                    borderWidth: 3
-                },
-                {
-                    label: 'Global average',
-                    data: {{ global_avg_q1 | tojson }},
-                    borderWidth: 3
-                }
+    <h1 class="page-title">
+        💚 Wellbeing Dashboard
+    </h1>
 
-            ]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    min: 1,
-                    max: 5
-                }
+    <div class="card">
+
+        <h2>{{ participant.name }}</h2>
+
+        {% if participant.country %}
+            <p class="info">
+                <b>Country:</b>
+                {{ participant.country.name }}
+            </p>
+        {% endif %}
+
+        <div class="chart-container">
+            <canvas id="myChart"></canvas>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+const ctx = document.getElementById('myChart');
+
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ labels | tojson }},
+        datasets: [
+            {
+                label: 'Student mood (Q1)',
+                data: {{ student_q1 | tojson }},
+                borderWidth: 3,
+                borderColor: '#3b82f6'
+            },
+            {
+                label: 'Global average',
+                data: {{ global_avg_q1 | tojson }},
+                borderWidth: 3,
+                borderColor: '#ef476f'
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                min: 1,
+                max: 5
             }
         }
-    });
+    }
+});
 </script>
 
-</body>
-</html>
+{% endblock %}

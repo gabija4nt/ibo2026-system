@@ -1,76 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration — IBO 2026</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; }
-        .header { background: #1a3a5c; color: white; padding: 20px 40px; }
-        .header h1 { font-size: 1.5rem; }
-        .back { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.85rem; display: block; margin-bottom: 8px; }
-        .back:hover { color: white; }
-        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-        .card h2 { color: #1a3a5c; margin-bottom: 20px; font-size: 1rem; }
-        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.85rem; color: #444; }
-        input, select { width: 100%; padding: 10px 12px; border: 2px solid #e0e0e0; border-radius: 8px;
-                        font-size: 0.9rem; margin-bottom: 15px; transition: border-color 0.2s; }
-        input:focus, select:focus { outline: none; border-color: #1a3a5c; }
-        button { width: 100%; padding: 12px; background: #1a3a5c; color: white; border: none;
-                 border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
-        button:hover { background: #2a5a8c; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 10px 12px; background: #f8f9fa; font-size: 0.78rem;
-             color: #666; text-transform: uppercase; }
-        td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; }
-        tr:last-child td { border-bottom: none; }
-        .role { padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
-        .student { background: #e3f2fd; color: #1565c0; }
-        .guide { background: #e8f5e9; color: #2e7d32; }
-        .leader { background: #fff3e0; color: #e65100; }
-        .organizer { background: #f3e5f5; color: #6a1b9a; }
-        .empty { text-align: center; color: #aaa; padding: 20px; font-size: 0.85rem; }
-        .full-width { grid-column: 1 / -1; }
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+{% extends "base.html" %}
 
-        .logout-btn {
-            color: white;
-            text-decoration: none;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 10px 18px;
-            border-radius: 10px;
-        }
+{% block title %}
+Administration
+{% endblock %}
 
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.1);
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
+{% block content %}
 
-        <div class="header-top">
-    
-            <div>
-                <a href="/" class="back">← Back</a>
-                <h1>⚙️ Participant administration</h1>
-            </div>
-    
-            <a href="/logout" class="logout-btn">
-                Logout
-            </a>
-    
-        </div>
-    
-    </div>
-    <div class="container">
+<div class="container-medium">
+
+    <h1 class="page-title">
+        ⚙️ Participant Administration
+    </h1>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -81,7 +21,7 @@
             {% endif %}
         {% endwith %}
         <div class="grid">
-            <div class="card">
+            <div class="card events-card">
                 <h2>📅 Events</h2>
             
                 <form method="POST">
@@ -101,32 +41,63 @@
                 <br>
             
                 {% if events %}
+
                     <h3>Existing Events</h3>
-                    <ul>
+
+                    <div class="event-list">
+
                         {% for event in events %}
-                            <li>
-                                {{ event.name }}
-                                
+
+                            <div class="event-row">
+
+                                <span>
+                                    {{ event.name }}
+                                </span>
+
                                 {% if event.active %}
-                                    ✅ ACTIVE
+                                    <span class="active-badge">
+                                        ✅ Active
+                                    </span>
                                 {% else %}
-                                    <form method="POST" style="display:inline;">
+                                    <form method="POST">
                                         <input type="hidden"
-                                                name="activate_event"
-                                                value="{{ event.id }}">
-                                        <button type="submit">
+                                            name="activate_event"
+                                            value="{{ event.id }}">
+
+                                        <button class="small-btn"
+                                                type="submit">
                                             Activate
                                         </button>
                                     </form>
                                 {% endif %}
-                            </li>  
+
+                            </div>
+
                         {% endfor %}
-                    </ul>
+
+                    </div>
+
+                    <div class="event-summary">
+                        <p>
+                            <b>Total events:</b>
+                            {{ events|length }}
+                        </p>
+
+                        {% for event in events %}
+                            {% if event.active %}
+                                <p>
+                                    <b>Active event:</b>
+                                    {{ event.name }}
+                                </p>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
                 {% endif %}
             </div>
             <div class="card">
                 <h2>➕ Add Participant</h2>
-                <div class="card">
+                <div class="csv-box">
                     <h2>📁 Import Participants (CSV)</h2>
                 
                     <form method="POST" enctype="multipart/form-data">
@@ -160,7 +131,7 @@
                 </form>
             </div>
 
-            <div class="card">
+            <div class="card full-width">
                 <h2>👥 Registered Participants</h2>
                 {% if participants %}
                 <table>
@@ -189,5 +160,6 @@
             </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+
+{% endblock %}
