@@ -83,10 +83,10 @@ def checkin():
     message = None
     participant = None
 
-    active_event = Event.query.filter_by(active=True).first()
+    active_event = Event.query.filter_by(active=True).all()
     if request.method == 'POST':
         nfc_id = request.form.get('nfc_id')
-        event = active_event.name if active_event else "No Active Event"
+        event = request.form.get("event_name")
         participant = Participant.query.filter_by(nfc_id=nfc_id).first()
         if participant:
             entry = CheckIn(participant_id=participant.id, event_name=event)
@@ -95,7 +95,17 @@ def checkin():
             message = f'✅ {participant.name} successfully checked in!'
         else:
             message = '❌ Participant not found'
-    return render_template('checkin.html', message=message, participant=participant, active_event=active_event)
+    all_events = Event.query.order_by(
+        Event.name
+    ).all()
+
+    return render_template(
+        'checkin.html',
+        message=message,
+        participant=participant,
+        active_event=active_event,
+        all_events=all_events
+    )
 
 @app.route('/wellbeing', methods=['GET', 'POST'])
 def wellbeing():
@@ -148,7 +158,7 @@ def dashboard():
     if user.role not in ['admin', 'organizer']:
         return "Access denied", 403
     
-    checkins = CheckIn.query.order_by(CheckIn.timestamp.desc()).limit(20).all()
+    checkins = CheckIn.query.order_by(CheckIn.timestamp.desc()).all()
     total_participants = Participant.query.count()
     total_checkins = CheckIn.query.count()
     active_event = Event.query.filter_by(active=True).first()

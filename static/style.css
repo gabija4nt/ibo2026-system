@@ -307,7 +307,7 @@ hr {
     text-align: center;
     color: #888;
     font-size: 0.8rem;
-    margin-top: 10px;
+    margin-bottom: 25px;
 }
 
 .container-small {
@@ -527,4 +527,52 @@ hr {
 .error {
     background: #f8d7da;
     color: #721c24;
+}
+
+th input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #d8dee6;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background: white;
+}
+
+th input:focus {
+    outline: none;
+    border-color: #1a3a5c;
+}
+
+thead tr:nth-child(2) {
+    background: #f8fafc;
+}
+
+thead tr:nth-child(2) th {
+    padding: 10px;
+}
+
+.filter-summary {
+    margin: 15px 0;
+    font-size: 0.95rem;
+    color: #666;
+}
+
+.filter-summary span {
+    font-weight: 700;
+    color: #1a3a5c;
+}
+
+select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    background: white;
+}
+
+select:focus {
+    outline: none;
+    border-color: #1a3a5c;
 }

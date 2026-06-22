@@ -54,7 +54,7 @@ Dashboard
                         </tr>
                     </thead>
         
-                    <tbody>
+                    <tbody id="eventTable">
                         {% for event in event_stats %}
                         <tr>
                             <td>
@@ -70,9 +70,47 @@ Dashboard
                 </table>
             {% endif %}
         </div>
+        <script>
+
+            document.getElementById("checkinFilter")
+            .addEventListener("keyup", function() {
+            
+                let filter =
+                    this.value.toLowerCase();
+            
+                let rows =
+                    document.querySelectorAll(
+                        "#checkinTable tr"
+                    );
+            
+                rows.forEach(function(row) {
+            
+                    let text =
+                        row.innerText.toLowerCase();
+            
+                    if (text.includes(filter)) {
+                        row.style.display = "";
+                    }
+                    else {
+                        row.style.display = "none";
+                    }
+            
+                });
+            
+            });
+            
+        </script>
         <div class="card">
             <h2>🕐 Recent Check-ins</h2>
             {% if checkins %}
+            
+            <div class="filter-count">
+                <div class="filter-summary">
+                    Showing
+                    <span id="visibleRowsCount">{{ checkins|length }}</span>
+                    matching check-ins
+                </div>
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -82,10 +120,31 @@ Dashboard
                         <th>Event</th>
                         <th>Time</th>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for c in checkins %}
+
                     <tr>
+                        <th>
+                            <input type="text" id="participantFilter" placeholder="Search">
+                        </th>
+                
+                        <th>
+                            <input type="text" id="roleFilter" placeholder="Search">
+                        </th>
+                
+                        <th>
+                            <input type="text" id="countryFilter" placeholder="Search">
+                        </th>
+                
+                        <th>
+                            <input type="text" id="eventFilter" placeholder="Search">
+                        </th>
+                
+                        <th></th>
+                
+                    </tr>
+                </thead>
+                <tbody id="checkinTable">
+                    {% for c in checkins %}
+                    <tr class="checkin-row">
                         <td>{{ c.participant.name }}</td>
                         <td>
                             <span class="role {{ c.participant.role }}">
@@ -176,5 +235,78 @@ Dashboard
         </div>
     </div>
 </div>
+<script>
+
+    function filterTable() {
+    
+        let participant =
+            document.getElementById("participantFilter")
+            .value.toLowerCase();
+    
+        let role =
+            document.getElementById("roleFilter")
+            .value.toLowerCase();
+    
+        let country =
+            document.getElementById("countryFilter")
+            .value.toLowerCase();
+    
+        let event =
+            document.getElementById("eventFilter")
+            .value.toLowerCase();
+    
+        let rows =
+            document.querySelectorAll(".checkin-row");
+        
+            let visibleCount = 0;
+    
+        rows.forEach(function(row) {
+    
+            let cells = row.getElementsByTagName("td");
+    
+            let participantText =
+                cells[0].innerText.toLowerCase();
+    
+            let roleText =
+                cells[1].innerText.toLowerCase();
+    
+            let countryText =
+                cells[2].innerText.toLowerCase();
+    
+            let eventText =
+                cells[3].innerText.toLowerCase();
+    
+            let show =
+                participantText.includes(participant) &&
+                roleText.includes(role) &&
+                countryText.includes(country) &&
+                eventText.includes(event);
+    
+                row.style.display =
+                    show ? "" : "none";
+
+                if (show) {
+                    visibleCount++;
+                }
+                document.getElementById(
+                    "visibleRowsCount"
+                ).innerText = visibleCount;
+    
+        });
+    }
+    
+    document.getElementById("participantFilter")
+        .addEventListener("keyup", filterTable);
+    
+    document.getElementById("roleFilter")
+        .addEventListener("keyup", filterTable);
+    
+    document.getElementById("countryFilter")
+        .addEventListener("keyup", filterTable);
+    
+    document.getElementById("eventFilter")
+        .addEventListener("keyup", filterTable);
+    
+</script>
 
 {% endblock %}

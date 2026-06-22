@@ -16,19 +16,35 @@ Check-in
                 </div>
             {% endif %}
             <form method="POST">
-                <label>NFC tag ID</label>
-                <input type="text" name="nfc_id" placeholder="Scan or enter NFC ID" required autofocus>
-                <p class="nfc-hint">📡 Hold the NFC card near the device or enter the ID manually</p>
-                <br>
-                <label>Current Active Event</label>
+                
+                <label>Event</label>
+                <select name="event_name" required>
 
-                <div class="event-box">
-                    {% if active_event %}
-                        📅 {{ active_event.name }}
-                    {% else %}
-                        ⚠️ No active event selected
+                    {% if active_events %}
+                    <optgroup label="Recommended Events">
+
+                        {% for event in active_events %}
+                        <option value="{{ event.name }}">
+                            {{ event.name }}
+                        </option>
+                        {% endfor %}
+
+                    </optgroup>
                     {% endif %}
-                </div>
+
+                    <optgroup label="All Events">
+
+                        {% for event in all_events %}
+                        <option value="{{ event.name }}">
+                            {{ event.name }}
+                        </option>
+                        {% endfor %}
+
+                    </optgroup>
+                </select>
+                <label>Participant ID</label>
+                <input type="text" name="nfc_id" placeholder="Scan or enter Participant ID" required autofocus>
+                <p class="nfc-hint">📡 Hold the Participant card with barcode near the device or enter the ID manually</p>
                 <button type="submit">
                     📲 Check In
                 </button>
