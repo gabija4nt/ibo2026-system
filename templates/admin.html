@@ -130,7 +130,35 @@ Administration
                     <button type="submit">➕ Add</button>
                 </form>
             </div>
+            <div class="card">
 
+                <h2>💚 Wellbeing Questions</h2>
+            
+                <form method="POST">
+            
+                    {% for question in questions %}
+            
+                        <label>{{ question.code.upper() }}</label>
+            
+                        <input
+                            type="text"
+                            name="{{ question.code }}"
+                            value="{{ question.text }}"
+                        >
+            
+                    {% endfor %}
+            
+                    <button
+                        type="submit"
+                        name="save_questions"
+                        value="1"
+                    >
+                        Save Questions
+                    </button>
+            
+                </form>
+            
+            </div>
             <div class="card full-width">
                 <h2>👥 Registered Participants</h2>
                 {% if participants %}

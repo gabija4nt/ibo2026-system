@@ -59,6 +59,20 @@ class User(db.Model):
 
     country = db.relationship('Country')
 
+class WellbeingQuestion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    code = db.Column(
+        db.String(20),
+        unique=True,
+        nullable=False
+    )
+
+    text = db.Column(
+        db.String(300),
+        nullable=False
+    )
+
 # --- PAGES ---
 
 @app.route('/')
@@ -109,6 +123,10 @@ def checkin():
 
 @app.route('/wellbeing', methods=['GET', 'POST'])
 def wellbeing():
+    questions = {
+        q.code: q.text
+        for q in WellbeingQuestion.query.all()
+    }
     message = None
     if request.method == 'POST':
         nfc_id = request.form.get('nfc_id')
@@ -145,7 +163,12 @@ def wellbeing():
 
         else:
             message = '❌ Participant not found'
-    return render_template('wellbeing.html', message=message)
+        questions = {
+            q.code: q.text
+            for q in WellbeingQuestion.query.all()
+        }
+
+    return render_template('wellbeing.html', message=message, questions=questions)
 
 @app.route('/dashboard')
 def dashboard():
@@ -247,11 +270,43 @@ def admin():
         return "Access denied", 403
 
     if request.method == 'POST':
+        if request.form.get('save_questions'):
+
+            questions = WellbeingQuestion.query.all()
+
+            for question in questions:
+
+                new_text = request.form.get(
+                    question.code
+                )
+
+                if new_text:
+                    question.text = new_text
+
+            db.session.commit()
+
+            flash(
+                "Questions updated successfully",
+                "success"
+            )
+
+            return redirect(url_for('admin'))
+        
         if request.form.get('activate_event'):
 
             event_id = request.form.get('activate_event')
 
-            Event.query.update({'active': False})
+            if request.form.get('activate_event'):
+
+                event_id = request.form.get('activate_event')
+
+                event = Event.query.get(event_id)
+
+                if event:
+                    event.active = not event.active
+                    db.session.commit()
+
+                return redirect(url_for('admin'))
 
             event = Event.query.get(event_id)
 
@@ -344,10 +399,14 @@ def admin():
     participants = Participant.query.all()
     events = Event.query.all()
 
+    questions = WellbeingQuestion.query.order_by(
+        WellbeingQuestion.code
+    ).all()
     return render_template(
         'admin.html',
         participants=participants,
-        events=events
+        events=events,
+        questions=questions
     )
 
 @app.route('/wellbeing_dashboard/<int:participant_id>')

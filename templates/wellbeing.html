@@ -23,7 +23,7 @@ Wellbeing Survey
                 <h2>Rate your experience today:</h2>
 
                 <div class="question">
-                    <p>1. How do you feel today? 😊</p>
+                    <p>1. {{ questions['q1'] }}</p>
                     <div class="stars">
                         <input type="radio" name="q1" id="q1_5" value="5"><label for="q1_5">😄</label>
                         <input type="radio" name="q1" id="q1_4" value="4"><label for="q1_4">🙂</label>
@@ -34,7 +34,7 @@ Wellbeing Survey
                 </div>
 
                 <div class="question">
-                    <p>2. Did you sleep well? 😴</p>
+                    <p>2. {{ questions['q2'] }}</p>
                     <div class="stars">
                         <input type="radio" name="q2" id="q2_5" value="5"><label for="q2_5">😄</label>
                         <input type="radio" name="q2" id="q2_4" value="4"><label for="q2_4">🙂</label>
@@ -45,7 +45,7 @@ Wellbeing Survey
                 </div>
 
                 <div class="question">
-                    <p>3. Do you feel ready for tomorrow's activities? 💪</p>
+                    <p>3. {{ questions['q3'] }}</p>
                     <div class="stars">
                         <input type="radio" name="q3" id="q3_5" value="5"><label for="q3_5">😄</label>
                         <input type="radio" name="q3" id="q3_4" value="4"><label for="q3_4">🙂</label>
