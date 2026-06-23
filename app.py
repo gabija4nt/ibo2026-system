@@ -37,6 +37,8 @@ class Wellbeing(db.Model):
     q1 = db.Column(db.Integer)  # 1-5
     q2 = db.Column(db.Integer)
     q3 = db.Column(db.Integer)
+    q4 = db.Column(db.Integer)
+    q5 = db.Column(db.Integer)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Event(db.Model):
@@ -153,7 +155,9 @@ def wellbeing():
                     participant_id=participant.id,
                     q1=request.form.get('q1'),
                     q2=request.form.get('q2'),
-                    q3=request.form.get('q3')
+                    q3=request.form.get('q3'),
+                    q4=request.form.get('q4'),
+                    q5=request.form.get('q5'),
                 )
 
                 db.session.add(entry)
