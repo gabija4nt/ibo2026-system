@@ -22,27 +22,49 @@ Wellbeing Survey
 
                 <h2>Rate your experience today:</h2>
 
-                {% for code, text in questions.items() %}
-
-                {% if text.strip() %}
+                {% for question in questions %}
 
                 <div class="question">
 
-                    <p>{{ loop.index }}. {{ text }}</p>
-
+                    <p>{{ loop.index }}. {{ question.text }}</p>
+                
                     <div class="stars">
-                        <input type="radio" name="{{ code }}" id="{{ code }}_1" value="1"><label for="{{ code }}_1">😢</label>
-                        <input type="radio" name="{{ code }}_2" value="2"><label for="{{ code }}_2">😕</label>
-                        <input type="radio" name="{{ code }}_3" value="3"><label for="{{ code }}_3">😐</label>
-                        <input type="radio" name="{{ code }}_4" value="4"><label for="{{ code }}_4">🙂</label>
-                        <input type="radio" name="{{ code }}_5" value="5"><label for="{{ code }}_5">😄</label>
+                
+                        <input type="radio"
+                               name="question_{{ question.id }}"
+                               id="q{{ question.id }}_1"
+                               value="1">
+                        <label for="q{{ question.id }}_1">😢</label>
+                
+                        <input type="radio"
+                               name="question_{{ question.id }}"
+                               id="q{{ question.id }}_2"
+                               value="2">
+                        <label for="q{{ question.id }}_2">😕</label>
+                
+                        <input type="radio"
+                               name="question_{{ question.id }}"
+                               id="q{{ question.id }}_3"
+                               value="3">
+                        <label for="q{{ question.id }}_3">😐</label>
+                
+                        <input type="radio"
+                               name="question_{{ question.id }}"
+                               id="q{{ question.id }}_4"
+                               value="4">
+                        <label for="q{{ question.id }}_4">🙂</label>
+                
+                        <input type="radio"
+                               name="question_{{ question.id }}"
+                               id="q{{ question.id }}_5"
+                               value="5">
+                        <label for="q{{ question.id }}_5">😄</label>
+                
                     </div>
-
+                
                 </div>
 
-                {% endif %}
-
-            {% endfor %}
+                {% endfor %}
 
                 <button type="submit">💚 Submit</button>
             </form>

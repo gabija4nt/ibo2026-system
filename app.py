@@ -32,14 +32,21 @@ class CheckIn(db.Model):
 
 class Wellbeing(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    participant_id = db.Column(db.Integer, db.ForeignKey('participant.id'))
-    participant = db.relationship('Participant', backref='wellbeing')
-    q1 = db.Column(db.Integer)  # 1-5
-    q2 = db.Column(db.Integer)
-    q3 = db.Column(db.Integer)
-    q4 = db.Column(db.Integer)
-    q5 = db.Column(db.Integer)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    participant_id = db.Column(
+        db.Integer,
+        db.ForeignKey('participant.id')
+    )
+
+    participant = db.relationship(
+        'Participant',
+        backref='wellbeing'
+    )
+
+    timestamp = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -63,16 +70,36 @@ class User(db.Model):
 
 class WellbeingQuestion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(20), unique=True)
+    text = db.Column(db.String(300))
 
-    code = db.Column(
-        db.String(20),
-        unique=True,
-        nullable=False
+class WellbeingAnswer(db.Model):
+    id = db.Column(
+        db.Integer,
+        primary_key=True
     )
 
-    text = db.Column(
-        db.String(300),
-        nullable=False
+    wellbeing_id = db.Column(
+        db.Integer,
+        db.ForeignKey('wellbeing.id')
+    )
+
+    question_id = db.Column(
+        db.Integer,
+        db.ForeignKey('wellbeing_question.id')
+    )
+
+    answer = db.Column(
+        db.Integer
+    )
+
+    wellbeing = db.relationship(
+        'Wellbeing',
+        backref='answers'
+    )
+
+    question = db.relationship(
+        'WellbeingQuestion'
     )
 
 
@@ -127,10 +154,7 @@ def checkin():
 
 @app.route('/wellbeing', methods=['GET', 'POST'])
 def wellbeing():
-    questions = {
-        q.code: q.text
-        for q in WellbeingQuestion.query.all()
-    }
+    questions = WellbeingQuestion.query.all()
     message = None
     if request.method == 'POST':
         nfc_id = request.form.get('nfc_id')
@@ -155,24 +179,33 @@ def wellbeing():
             else:
                 entry = Wellbeing(
                     participant_id=participant.id,
-                    q1=request.form.get('q1'),
-                    q2=request.form.get('q2'),
-                    q3=request.form.get('q3'),
-                    q4=request.form.get('q4'),
-                    q5=request.form.get('q5'),
                 )
 
                 db.session.add(entry)
+                db.session.flush()
+
+                for question in questions:
+
+                    value = request.form.get(
+                        f'question_{question.id}'
+                    )
+
+                    if value:
+
+                        answer = WellbeingAnswer(
+                            wellbeing_id=entry.id,
+                            question_id=question.id,
+                            answer=int(value)
+                        )
+
+                        db.session.add(answer)
+                
                 db.session.commit()
-            
+                        
                 message = f'✅ {participant.name} wellbeing recorded!'
 
         else:
             message = '❌ Participant not found'
-        questions = {
-            q.code: q.text
-            for q in WellbeingQuestion.query.all()
-        }
 
     return render_template('wellbeing.html', message=message, questions=questions)
 
@@ -212,59 +245,45 @@ def dashboard():
     wellbeing_entries = Wellbeing.query.all()
     wellbeing_count = len(wellbeing_entries)
 
-    valid_q1 = [int(w.q1) for w in wellbeing_entries if w.q1 is not None]
-    valid_q2 = [int(w.q2) for w in wellbeing_entries if w.q2 is not None]
-    valid_q3 = [int(w.q3) for w in wellbeing_entries if w.q3 is not None]
-
-    if valid_q1:
-        avg_q1 = round(sum(valid_q1) / len(valid_q1), 2)
-    else:
-        avg_q1 = 0
-
-    if valid_q2:
-        avg_q2 = round(sum(valid_q2) / len(valid_q2), 2)
-    else:
-        avg_q2 = 0
-
-    if valid_q3:
-        avg_q3 = round(sum(valid_q3) / len(valid_q3), 2)
-    else:
-        avg_q3 = 0
-
-    if wellbeing_count > 0:
-        avg_wellbeing = round(
-            (avg_q1 + avg_q2 + avg_q3) / 3,
-            2
-        )
-    else:
-        avg_wellbeing = 0
-
-    if avg_wellbeing >= 4:
-        wellbeing_status = "🟢 Good wellbeing"
-    elif avg_wellbeing >= 3:
-        wellbeing_status = "🟡 Attention needed"
-    else:
-        wellbeing_status = "🔴 High risk"
-
+    
     recent_wellbeing = Wellbeing.query.order_by(
         Wellbeing.timestamp.desc()
     ).limit(10).all()
+
+    delegation_wellbeing = {}
+
+    if user.role == 'organizer':
+
+        participants = Participant.query.filter_by(
+            country_id=user.country_id,
+            role='student'
+        ).all()
+
+        for participant in participants:
+
+            entries = Wellbeing.query.filter_by(
+                participant_id=participant.id
+            ).order_by(
+                Wellbeing.timestamp.asc()
+            ).all()
+
+            
+    avg_wellbeing = 0
+    wellbeing_status = "Not calculated yet"
 
     return render_template(
         'dashboard.html',
         checkins=checkins,
         total=total_participants, 
         total_checkins=total_checkins,
-        avg_q1=avg_q1,
-        avg_q2=avg_q2,
-        avg_q3=avg_q3,
         wellbeing_count=wellbeing_count,
         active_event=active_event,
         event_stats=event_stats,
         avg_wellbeing=avg_wellbeing,
         recent_wellbeing=recent_wellbeing,
-        wellbeing_status=wellbeing_status,
+        wellbeing_status=wellbeing_status
     )
+    
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
@@ -491,8 +510,8 @@ def wellbeing_dashboard(participant_id):
         participant=participant,
         wellbeing_entries=wellbeing_entries,
         labels=labels,
-        student_q1=student_q1,
-        global_avg_q1=global_avg_q1,
+        # student_q1=student_q1,
+        # global_avg_q1=global_avg_q1,
     )
 
 @app.route('/leader_dashboard')
@@ -538,8 +557,8 @@ def leader_dashboard():
             ).all()
 
             values = [
-                w.q1 for w in all_entries
-                if w.q1 is not None
+                # w.q1 for w in all_entries
+                # if w.q1 is not None
             ]
 
             if values:

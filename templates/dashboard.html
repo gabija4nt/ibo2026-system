@@ -183,39 +183,6 @@ Dashboard
                     <tr>
                         <td>{{ w.participant.name }}</td>
                         <td>{{ w.participant.country.name if w.participant.country else '—' }}</td>
-                        <td>
-                            {% if w.q1 is none %}
-                                —
-                            {% elif w.q1 >= 4 %}
-                                <span class="good">{{ w.q1 }}/5</span>
-                            {% elif w.q1 == 3 %}
-                                <span class="warning">{{ w.q1 }}/5</span>
-                            {% else %}
-                                <span class="bad">{{ w.q1 }}/5</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if w.q2 is none %}
-                                —
-                            {% elif w.q2 >= 4 %}
-                                <span class="good">{{ w.q2 }}/5</span>
-                            {% elif w.q2 == 3 %}
-                                <span class="warning">{{ w.q2 }}/5</span>
-                            {% else %}
-                                <span class="bad">{{ w.q2 }}/5</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if w.q3 is none %}
-                                —
-                            {% elif w.q3 >= 4 %}
-                                <span class="good">{{ w.q3 }}/5</span>
-                            {% elif w.q3 == 3 %}
-                                <span class="warning">{{ w.q3 }}/5</span>
-                            {% else %}
-                                <span class="bad">{{ w.q3 }}/5</span>
-                            {% endif %}
-                        </td>
                         
                         <td>{{ w.timestamp.strftime('%H:%M, %d/%m') }}</td>
                         
@@ -235,6 +202,7 @@ Dashboard
         </div>
     </div>
 </div>
+{{ delegation_wellbeing }}  
 <script>
 
     function filterTable() {
