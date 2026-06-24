@@ -22,60 +22,27 @@ Wellbeing Survey
 
                 <h2>Rate your experience today:</h2>
 
-                <div class="question">
-                    <p>1. {{ questions['q1'] }}</p>
-                    <div class="stars">
-                        <input type="radio" name="q1" id="q1_5" value="5"><label for="q1_5">😄</label>
-                        <input type="radio" name="q1" id="q1_4" value="4"><label for="q1_4">🙂</label>
-                        <input type="radio" name="q1" id="q1_3" value="3"><label for="q1_3">😐</label>
-                        <input type="radio" name="q1" id="q1_2" value="2"><label for="q1_2">😕</label>
-                        <input type="radio" name="q1" id="q1_1" value="1"><label for="q1_1">😢</label>
-                    </div>
-                </div>
+                {% for code, text in questions.items() %}
+
+                {% if text.strip() %}
 
                 <div class="question">
-                    <p>2. {{ questions['q2'] }}</p>
+
+                    <p>{{ loop.index }}. {{ text }}</p>
+
                     <div class="stars">
-                        <input type="radio" name="q2" id="q2_5" value="5"><label for="q2_5">😄</label>
-                        <input type="radio" name="q2" id="q2_4" value="4"><label for="q2_4">🙂</label>
-                        <input type="radio" name="q2" id="q2_3" value="3"><label for="q2_3">😐</label>
-                        <input type="radio" name="q2" id="q2_2" value="2"><label for="q2_2">😕</label>
-                        <input type="radio" name="q2" id="q2_1" value="1"><label for="q2_1">😢</label>
+                        <input type="radio" name="{{ code }}" id="{{ code }}_1" value="1"><label for="{{ code }}_1">😢</label>
+                        <input type="radio" name="{{ code }}_2" value="2"><label for="{{ code }}_2">😕</label>
+                        <input type="radio" name="{{ code }}_3" value="3"><label for="{{ code }}_3">😐</label>
+                        <input type="radio" name="{{ code }}_4" value="4"><label for="{{ code }}_4">🙂</label>
+                        <input type="radio" name="{{ code }}_5" value="5"><label for="{{ code }}_5">😄</label>
                     </div>
+
                 </div>
 
-                <div class="question">
-                    <p>3. {{ questions['q3'] }}</p>
-                    <div class="stars">
-                        <input type="radio" name="q3" id="q3_5" value="5"><label for="q3_5">😄</label>
-                        <input type="radio" name="q3" id="q3_4" value="4"><label for="q3_4">🙂</label>
-                        <input type="radio" name="q3" id="q3_3" value="3"><label for="q3_3">😐</label>
-                        <input type="radio" name="q3" id="q3_2" value="2"><label for="q3_2">😕</label>
-                        <input type="radio" name="q3" id="q3_1" value="1"><label for="q3_1">😢</label>
-                    </div>
-                </div>
+                {% endif %}
 
-                <div class="question">
-                    <p>4. {{ questions['q4'] }}</p>
-                    <div class="stars">
-                        <input type="radio" name="q4" id="q4_5" value="5"><label for="q4_5">😄</label>
-                        <input type="radio" name="q4" id="q4_4" value="4"><label for="q4_4">🙂</label>
-                        <input type="radio" name="q4" id="q4_3" value="3"><label for="q4_3">😐</label>
-                        <input type="radio" name="q4" id="q4_2" value="2"><label for="q4_2">😕</label>
-                        <input type="radio" name="q4" id="q4_1" value="1"><label for="q4_1">😢</label>
-                    </div>
-                </div>
-
-                <div class="question">
-                    <p>5. {{ questions['q5'] }}</p>
-                    <div class="stars">
-                        <input type="radio" name="q5" id="q5_5" value="5"><label for="q5_5">😄</label>
-                        <input type="radio" name="q5" id="q5_4" value="4"><label for="q5_4">🙂</label>
-                        <input type="radio" name="q5" id="q5_3" value="3"><label for="q5_3">😐</label>
-                        <input type="radio" name="q5" id="q5_2" value="2"><label for="q5_2">😕</label>
-                        <input type="radio" name="q5" id="q5_1" value="1"><label for="q5_1">😢</label>
-                    </div>
-                </div>
+            {% endfor %}
 
                 <button type="submit">💚 Submit</button>
             </form>

@@ -75,6 +75,8 @@ class WellbeingQuestion(db.Model):
         nullable=False
     )
 
+
+
 # --- PAGES ---
 
 @app.route('/')
@@ -272,6 +274,23 @@ def admin():
 
     if session['role'] != 'admin':
         return "Access denied", 403
+    
+    if request.form.get('delete_question'):
+
+        question_id = request.form.get(
+            'delete_question'
+        )
+
+        question = WellbeingQuestion.query.get(
+            question_id
+        )
+
+        if question:
+            question.text = ""
+
+            db.session.commit()
+
+        return redirect(url_for('admin'))
 
     if request.method == 'POST':
         if request.form.get('save_questions'):
