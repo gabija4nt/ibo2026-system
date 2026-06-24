@@ -80,7 +80,7 @@ body {
 }
 
 .chart-container {
-    height: 250px;
+    height: 150px;
     margin: 25px 0;
 }
 
@@ -602,4 +602,44 @@ select:focus {
 
 .delete-btn:hover {
     background: #bb2d3b;
+}
+
+.student-graphs {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.student-card {
+    flex: 1;
+    min-width: 250px;
+}
+
+.logo-title a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    color: white;
+    text-decoration: none;
+}
+
+.logo-image {
+    height: 56px;
+    width: auto;
+}
+
+.login-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 4px;
+    margin-bottom: 6px;
+}
+
+.login-logo-image {
+    height: 150px;
+    margin-bottom: -25px;
+    width: auto;
 }

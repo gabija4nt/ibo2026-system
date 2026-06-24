@@ -530,57 +530,47 @@ def leader_dashboard():
         role='student'
     ).all()
 
-    student_data = []
+    questions = WellbeingQuestion.query.all()
 
-    for student in students:
+    dashboard_data = [] 
 
-        entries = Wellbeing.query.filter_by(
-            participant_id=student.id
-        ).order_by(
-            Wellbeing.timestamp
-        ).all()
+    for question in questions:
 
-        labels = []
-        q1_values = []
-        global_avg = []
+        question_block = {
+            'question': question,
+            'students': []
+        }
 
-        for e in entries:
+        for student in students:
 
-            labels.append(
-                e.timestamp.strftime('%d/%m')
-            )
+            answers = []
 
-            q1_values.append(e.q1)
-
-            all_entries = Wellbeing.query.filter(
-                Wellbeing.q1 != None
+            wellbeing_entries = Wellbeing.query.filter_by(
+                participant_id=student.id
+            ).order_by(
+                Wellbeing.timestamp
             ).all()
 
-            values = [
-                # w.q1 for w in all_entries
-                # if w.q1 is not None
-            ]
+            for entry in wellbeing_entries:
 
-            if values:
-                avg = round(
-                    sum(values) / len(values),
-                    2
-                )
-            else:
-                avg = 0
+                answer = WellbeingAnswer.query.filter_by(
+                    wellbeing_id=entry.id,
+                    question_id=question.id
+                ).first()
 
-            global_avg.append(avg)
+                if answer:
+                    answers.append(answer.answer)
+
+            question_block['students'].append({
+                'student': student,
+                'answers': answers
+            })
         
-        student_data.append({
-            'student': student,
-            'labels': labels,
-            'q1_values': q1_values,
-            'global_avg': global_avg
-        })
+        dashboard_data.append(question_block)
 
     return render_template(
         'leader_dashboard.html',
-        student_data=student_data
+        dashboard_data=dashboard_data
     )
 
 @app.route('/login', methods=['GET', 'POST'])
