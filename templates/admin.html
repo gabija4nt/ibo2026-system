@@ -54,22 +54,22 @@ Administration
                                     {{ event.name }}
                                 </span>
 
-                                {% if event.active %}
-                                    <span class="active-badge">
-                                        ✅ Active
-                                    </span>
-                                {% else %}
-                                    <form method="POST">
-                                        <input type="hidden"
-                                            name="activate_event"
-                                            value="{{ event.id }}">
+                                <form method="POST">
 
-                                        <button class="small-btn"
-                                                type="submit">
-                                            Activate
-                                        </button>
-                                    </form>
-                                {% endif %}
+                                    <button
+                                        type="submit"
+                                        name="toggle_event"
+                                        value="{{ event.id }}"
+                                        class="question-toggle"
+                                    >
+                                        {% if event.active %}
+                                            🟢 Active
+                                        {% else %}
+                                            ⚪ Inactive
+                                        {% endif %}
+                                    </button>
+
+                                </form>
 
                             </div>
 
@@ -83,14 +83,19 @@ Administration
                             {{ events|length }}
                         </p>
 
-                        {% for event in events %}
-                            {% if event.active %}
-                                <p>
-                                    <b>Active event:</b>
-                                    {{ event.name }}
-                                </p>
-                            {% endif %}
-                        {% endfor %}
+                        {% set active_events = events | selectattr('active') | list %}
+
+                        {% if active_events %}
+                            <p>
+                                <b>Active event:</b>
+                                {{ active_events[0].name }}
+                            </p>
+                        {% else %}
+                            <p>
+                                <b>Active event:</b>
+                                None
+                            </p>
+                        {% endif %}
                     </div>
 
                 {% endif %}
@@ -135,6 +140,14 @@ Administration
                 <h2>💚 Wellbeing Questions</h2>
             
                 <form method="POST">
+                    <button
+                            type="submit"
+                            name="add_question"
+                            value="1"
+                            class="add-question-btn"
+                        >
+                            ➕ Add Question
+                        </button>
             
                     {% for question in questions %}
             
@@ -150,12 +163,15 @@ Administration
                             >
                         
                             <button
-                                type="submit"
-                                name="delete_question"
+                                class="question-toggle {% if question.active %}active-btn{% else %}inactive-btn{% endif %}"
+                                name="toggle_question"
                                 value="{{ question.id }}"
-                                class="delete-btn"
                             >
-                                🗑
+                                {% if question.active %}
+                                    🟢 Active
+                                {% else %}
+                                    ⚪ Inactive
+                                {% endif %}
                             </button>
                         
                         </div>

@@ -72,6 +72,10 @@ class WellbeingQuestion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(20), unique=True)
     text = db.Column(db.String(300))
+    active = db.Column(
+        db.Boolean,
+        default=True
+    )
 
 class WellbeingAnswer(db.Model):
     id = db.Column(
@@ -154,7 +158,7 @@ def checkin():
 
 @app.route('/wellbeing', methods=['GET', 'POST'])
 def wellbeing():
-    questions = WellbeingQuestion.query.all()
+    questions = WellbeingQuestion.query.filter_by(active=True).all()
     message = None
     if request.method == 'POST':
         nfc_id = request.form.get('nfc_id')
@@ -294,24 +298,34 @@ def admin():
     if session['role'] != 'admin':
         return "Access denied", 403
     
-    if request.form.get('delete_question'):
+    if request.method == 'POST':
+        if request.form.get("toggle_question"):
 
-        question_id = request.form.get(
-            'delete_question'
-        )
+            question = WellbeingQuestion.query.get(
+                request.form.get("toggle_question")
+            )
 
-        question = WellbeingQuestion.query.get(
-            question_id
-        )
-
-        if question:
-            question.text = ""
+            question.active = not question.active
 
             db.session.commit()
 
-        return redirect(url_for('admin'))
+            return redirect(url_for("admin"))
 
-    if request.method == 'POST':
+        if request.form.get("add_question"):
+
+            count = WellbeingQuestion.query.count()
+
+            question = WellbeingQuestion(
+                code=f"q{count+1}",
+                text="",
+                active=True
+            )
+
+            db.session.add(question)
+            db.session.commit()
+
+            return redirect(url_for("admin"))
+        
         if request.form.get('save_questions'):
 
             questions = WellbeingQuestion.query.all()
@@ -333,6 +347,20 @@ def admin():
             )
 
             return redirect(url_for('admin'))
+
+        if request.form.get("toggle_event"):
+
+            event = Event.query.get(
+                request.form.get("toggle_event")
+            )
+
+            if event:
+
+                event.active = not event.active
+
+                db.session.commit()
+
+            return redirect(url_for("admin"))
         
         if request.form.get('activate_event'):
 
@@ -352,8 +380,8 @@ def admin():
 
             event = Event.query.get(event_id)
 
-            if event:
-                event.active = True
+            if question:
+                question.active = not question.active
                 db.session.commit()
 
             return redirect(url_for('admin'))
@@ -530,7 +558,7 @@ def leader_dashboard():
         role='student'
     ).all()
 
-    questions = WellbeingQuestion.query.all()
+    questions = WellbeingQuestion.query.filter_by(active=True).all()
 
     dashboard_data = [] 
 
